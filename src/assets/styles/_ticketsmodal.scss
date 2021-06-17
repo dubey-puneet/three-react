@@ -1,0 +1,72 @@
+.modal-dialog {
+  margin: 0;
+  padding: 0;
+  float: right;
+  width: 500px;
+  @media (max-width: 767px) {
+    width: 100vw;
+  }
+  .modal-content {
+    border: 0;
+    border-radius: 0;
+  }
+  .modal-header {
+    border: 0;
+    text-align: center;
+    svg {
+      position: absolute;
+      left: 22px;
+      top: 22px;
+    }
+  }
+  .modal-title {
+    margin: auto;
+    font-family: RubikMedium;
+    font-size: 20px;
+  }
+  .modal-body {
+    text-align: right;
+    .item {
+      margin-bottom: 32px;
+    }
+    label {
+      font-family: RubikMedium;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    input,
+    textarea {
+      width: 100%;
+      padding: 16px;
+      font-family: RubikLight;
+      font-size: 16px;
+      text-align: right;
+      border: 0;
+      background: #f9f9f9;
+    }
+    .btn {
+      font-family: RubikMedium;
+      font-size: 16px;
+      color: #fff;
+      display: inline-block;
+      padding: 14.5px 50px;
+      background: #f58818;
+      border-radius: 8px;
+      margin: auto;
+    }
+    .form-control {
+      width: auto;
+      padding: 16px;
+      height: 55px;
+    }
+    .input-group-text {
+      border: 0;
+      background: #f9f9f9;
+      margin: 0;
+      height: 55px;
+    }
+    .input-group-prepend {
+      margin: 0;
+    }
+  }
+}

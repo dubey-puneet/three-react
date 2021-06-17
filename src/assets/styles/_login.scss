@@ -1,0 +1,26 @@
+.content {
+  padding: 100px 20px;
+  text-align: center;
+  font-family: RubikMedium;
+  h2 {
+    margin-bottom: 40px;
+  }
+  & > div {
+    margin: 20px auto;
+  }
+}
+.input-group {
+  margin: 10px auto;
+}
+.subtn {
+  margin-top: 50px;
+  padding: 15px 46px;
+  color: #fff;
+  &:hover {
+    color: #fff;
+  }
+}
+.warning {
+  font-size: 13px;
+  padding: 7px;
+}
