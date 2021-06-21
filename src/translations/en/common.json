@@ -1,0 +1,63 @@
+{
+  "username": "Username",
+  "password": "Password",
+  "login": {
+    "login": "Log in",    
+    "please insert username": "Please insert username",
+    "please insert password": "Please insert password",
+    "username or password is not match": "Username or Password is not match"
+  },
+  "header": {
+    "settings": "Settings",
+    "opened tickets": "Opened Tickets",
+    "delay in payments": "Delay in payments",
+    "sales pie": "Sales Pie",
+    "upload file": "Upload File",
+    "signature": "Signature",
+    "sentence": "Ultricies purus dictum velit luctus volutpat faucibus rhoncus diam. Semper vulputate purus varius aliquam dictum velit luctus emper vulputat odio."
+  },
+  "tickets": {    
+    "submission date":"submission date",
+    "submission month":"submission month",
+    "Full name":"Full name",
+    "Id number":"Id number",
+    "partner name":"partner name",
+    "partner id":"partner id",
+    "agent":"agent",
+    "agent number":"agent number",
+    "insurance company":"insurance company",
+    "program name":"program name",
+    "start of insurance":"start of insurance",
+    "Suggestion premia":"Suggestion premia",
+    "Actual premia":"Actual premia",
+    "Number of polisa":"Number of polisa",
+    "Pending notes":"Pending notes",
+    "Date of insurance":"Date of insurance",
+    "Sent to insurance companies":"Sent to insurance companies",
+    "Date of status check":"Date of status check",
+    "First payment":"First payment",
+    "Payment after 3 months":"Payment after 3 months",
+    "Payment after year":"Payment after year",
+    "Outer cancelation":"Outer cancelation",
+    "Company":"Company",
+    "Polisa num":"Polisa num",
+    "Polica type":"Polica type",
+    "Sent date":"Sent date",
+    "Active client in Kedem":"Active client in Kedem",
+    "Twisting tag":"Twisting tag",
+    "Free notes":"Free notes",
+    "Product name to goals":"Product name to goals",
+    "Phone meeting":"Phone meeting",
+    "Fast start":"Fast start",
+	  "Id":"Id"
+  },
+  "uploadfile": {
+    "load data": "Load Data",
+    "choose file": "Choose File",
+    "file loaded successfully": "File Loaded Successfully",
+    "load another": "Load another",
+    "selected": "selected",
+    "remove": "Remove",
+    "load": "Load"
+  }   
+}

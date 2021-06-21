@@ -1,0 +1,63 @@
+{
+  "username": "שם משתמש",
+  "password": "סיסמה",
+  "login" : {
+    "login": "התחברות",    
+    "please insert username": "אנא הכנס שם משתמש",
+    "please insert password": "אנא הכנס סיסמה",
+    "username or password is not match": "שם המשתמש או הסיסמה אינם תואמים"
+  },
+  "header": {
+    "settings": "הגדרות",
+    "opened tickets": "כרטיסים שנפתחו",
+    "delay in payments": "עיכוב בתשלומים",
+    "sales pie": "פאי מכירות",
+    "upload file": "העלה קובץ",
+    "signature": "חֲתִימָה",
+    "sentence": "Ultricies purus dictum velit luctus volutpat faucibus rhoncus diam. Semper vulputate purus varius aliquam dictum velit luctus emper vulputat odio."
+  },
+  "tickets": {            
+    "submission date":"submission date",
+    "submission month":"submission month",
+    "Full name": "שם מבוטח ראשי (משפחה+פרטי)",
+    "Id number": "ת.ז : 9 ספרות",
+    "partner name": "שם מבוטח משני",
+    "partner id": "ת.ז : 9 ספרות2",
+    "agent": "סוכן",
+    "agent number": "מספר סוכן ",
+    "insurance company": "חברת ביטוח ",
+    "program name": "שם תוכנית ",
+    "start of insurance": "תחילת ביטוח ",
+    "Suggestion premia": "פרמיה לפי הצעה",
+    "Actual premia": "פרמיה מופקת",
+    "Number of polisa": "מספר פוליסה-חובה - לכל פוליסה שורה נפרדת!",
+    "Pending notes": "פנדינג והערות",
+    "Date of insurance": "תאריך הפקה",
+    "Sent to insurance companies": "שליחה לחברת הביטוח",
+    "Date of status check": "תאריך סטטוס בדיקה",
+    "First payment": "גבייה ראשונה -לנטרל גבייה כפולה/חלקית!",
+    "Payment after 3 months": "גבייה לאחר 3 - חודש",
+    "Payment after year": "גבייה לאחר12 חודש",
+    "Outer cancelation": "ביטול חיצוני",
+    "Company": "חברה",
+    "Polisa num": "מספר פוליסה",
+    "Polica type": "סוג פוליסה",
+    "Sent date": "תאריך שליחה",
+    "Active client in Kedem": "לקוח פעיל בקדם?",
+    "Twisting tag": "בוצע טוויסטינג?",
+    "Free notes": "הערות חופשיות",
+    "Product name to goals": "שם מוצר ליעדים",
+    "Phone meeting": "פגישה/טלפוני",
+    "Fast start": "הפקה מהירה",
+    "Id": "מספר מזהה"
+  },
+  "uploadfile": {
+    "load data": "לטעון מידע",
+    "choose file": "בחר קובץ",
+    "file loaded successfully": "קובץ נטען בהצלחה",
+    "load another": "טען קובץ חדש",
+    "selected": "נבחר",
+    "remove": "מחק",
+    "load": "טען"
+  }   
+}

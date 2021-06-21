@@ -1,5 +1,7 @@
 const ActionsType = {
   SET_CURRENT_USER: "SET_CURRENT_USER",
-};
+  SET_CURRENT_LANG: "SET_CURRENT_LANG",
+  SET_TABLE_DATA: "SET_TABLE_DATA"
+}
 
-export default ActionsType;
+export default ActionsType

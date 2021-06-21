@@ -21,7 +21,6 @@
   list-style: none;
   margin: 0;
   margin-top: 1.67vw;
-  margin-left: 2.83vw;
   @media (max-width: 767px) {
     margin-left: 0;
   }
@@ -34,12 +33,18 @@
     margin-left: 1.667vw;
     opacity: 0.7;
     padding: 0.394vw 0 0.694vw 0;
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
     @media (max-width: 767px) {
       font-size: 10px;
       margin-left: 15px;
     }
     &:hover {
       cursor: pointer;
+      opacity: 1;
+      border-bottom: 2px solid #f58818;
     }
     &.active {
       opacity: 1;
@@ -56,7 +61,6 @@
   padding: 0 2.83vw;
   border-left: 1px solid rgba(255, 255, 255, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  margin-left: 4.5vw;
   @media (max-width: 767px) {
     font-size: 9px;
     line-height: 10px;

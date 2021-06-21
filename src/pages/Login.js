@@ -2,6 +2,8 @@ import React from "react"
 
 import { connect } from "react-redux"
 import { InputGroup, FormControl, Alert, Button } from "react-bootstrap"
+import { withTranslation } from "react-i18next"
+
 import axios from "axios"
 import { setCurrentUser } from "../utils/redux/user/user.action"
 
@@ -14,7 +16,8 @@ class Login extends React.Component {
       username: "",
       password: "",
       showUsernameWarn: false,
-      showPasswordWarn: false
+      showPasswordWarn: false,
+      showMismatch: false
     }
   }
 
@@ -30,28 +33,50 @@ class Login extends React.Component {
       this.setState({ showPasswordWarn: false })
     }
     if (this.state.username !== "" && this.state.password !== "") {
-      this.props.setCurrentUser({
-        username: "Taylor Swift",
-        email: "tswift@gmail.com",
-        avatar: "taylor.png"
-      })
-      document.location = "/"
+      axios
+        .post(" http://eshkolserver.azurewebsites.net/api/Login/login", {
+          UserName: this.state.username,
+          Password: this.state.password
+        })
+        .then((res) => {
+          console.log(res.data)
+          if (res.data) {
+            this.props.setCurrentUser({
+              username: res.data.fullName,
+              email: res.data.email,
+              isAdmin: res.data.isAdmin,
+              avatar: "taylor.png",
+              token: res.data.token
+            })
+            document.location = "/tickets"
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data)
+          this.setState({ showMismatch: true })
+        })
     }
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className="content">
         <div className="col-md-4">
+          {this.state.showMismatch && (
+            <Alert variant="danger" className="warning">
+              {t("login.username or password is not match")}
+            </Alert>
+          )}
           {this.state.showUsernameWarn && (
             <Alert variant="danger" className="warning">
-              Please insert username
+              {t("login.please insert username")}
             </Alert>
           )}
 
           <InputGroup>
             <InputGroup.Prepend>
-              <InputGroup.Text>Username</InputGroup.Text>
+              <InputGroup.Text>{t("username")}</InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
               id="username"
@@ -62,13 +87,13 @@ class Login extends React.Component {
         <div className="col-md-4">
           {this.state.showPasswordWarn && (
             <Alert variant="danger" className="warning">
-              Please insert password
+              {t("login.please insert password")}
             </Alert>
           )}
 
           <InputGroup>
             <InputGroup.Prepend>
-              <InputGroup.Text>Password</InputGroup.Text>
+              <InputGroup.Text>{t("password")}</InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
               id="password"
@@ -78,7 +103,7 @@ class Login extends React.Component {
           </InputGroup>
         </div>
         <Button variant="warning" className="subtn" onClick={this.submit}>
-          Log in
+          {t("login.login")}
         </Button>
       </div>
     )
@@ -93,4 +118,7 @@ const mapDispatchStateToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user))
 })
 
-export default connect(mapStateToProps, mapDispatchStateToProps)(Login)
+export default connect(
+  mapStateToProps,
+  mapDispatchStateToProps
+)(withTranslation()(Login))

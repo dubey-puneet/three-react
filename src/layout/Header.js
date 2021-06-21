@@ -1,17 +1,20 @@
-import "../assets/styles/_header.scss"
 import React from "react"
 
 import { connect } from "react-redux"
 import { setCurrentUser } from "../utils/redux/user/user.action"
+import { withTranslation } from "react-i18next"
+
+import "../assets/styles/_header.scss"
 
 class Header extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   logout = () => {
     this.props.setCurrentUser(null)
   }
+
   render() {
+    const { t } = this.props
+    const pathname = window.location.pathname
+
     return (
       <div>
         {this.props.currentUser !== null && (
@@ -20,18 +23,20 @@ class Header extends React.Component {
               <img src="logo.png" alt="logo" />
             </div>
             <ul className="menu">
-              <li>Settings</li>
-              <li className="active">Opened Tickets</li>
-              <li>Delay in payments</li>
-              <li>Sales Pie</li>
+              {this.props.currentUser.isAdmin && (
+                <li className={`${pathname === "/uploadfile" ? "active" : ""}`}>
+                  <a href="/uploadfile">{t("header.upload file")}</a>
+                </li>
+              )}
+              <li className={`${pathname === "/tickets" ? "active" : ""}`}>
+                <a href="/tickets">{t("header.opened tickets")}</a>
+              </li>
+              <li>{t("header.delay in payments")}</li>
+              <li>{t("header.sales pie")}</li>
             </ul>
             <div className="signature">
-              <p>
-                "Ultricies purus dictum velit luctus volutpat faucibus rhoncus
-                diam. Semper vulputate purus varius aliquam dictum velit luctus
-                emper vulputat odio."
-              </p>
-              <b>Signature</b>
+              <p>{t("header.sentence")}</p>
+              <b>{t("header.signature")}</b>
             </div>
 
             <div className="user">
@@ -64,4 +69,7 @@ const mapDispatchStateToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user))
 })
 
-export default connect(mapStateToProps, mapDispatchStateToProps)(Header)
+export default connect(
+  mapStateToProps,
+  mapDispatchStateToProps
+)(withTranslation()(Header))

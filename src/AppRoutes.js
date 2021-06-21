@@ -11,10 +11,11 @@ function AppRoutes(props) {
   return (
     <Suspense fallback={<Spinner />}>
       <Switch>
+        <Route exact path="/" render={() => <Redirect to="/login" />} />
         <Route exact path="/login" component={Login} />
         <Route
           exact
-          path="/"
+          path="/tickets"
           render={() =>
             props.currentUser === null ? <Redirect to="/login" /> : <Tickets />
           }

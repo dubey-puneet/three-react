@@ -1,6 +1,7 @@
 import ActionsType from "./../utils/actions.type"
 const INITIAL_STATE = {
-  currentUser: null
+  currentUser: null,
+  currentLang: "en"
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -9,6 +10,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         currentUser: action.payload
+      }
+    case ActionsType.SET_CURRENT_LANG:
+      return {
+        ...state,
+        currentLang: action.payload
       }
     default:
       return state
