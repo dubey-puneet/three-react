@@ -31,19 +31,19 @@ const dateFieldArr = [
   "Sent date"
 ]
 const stringFieldArr = [
-  // "Id",
   "Full name",
   "Id number",
-  // "partner name",
-  // "partner id",
-  // "agent",
-  // "agent number",
   "insurance company",
   "program name",
   "Suggestion premia",
   "Actual premia",
-  // "Number of polisa",
   "Pending notes",
+  // "Id",
+  // "Number of polisa",
+  // "partner name",
+  // "partner id",
+  // "agent",
+  // "agent number",
   // "First payment",
   // "Payment after 3 months",
   // "Payment after year",
@@ -102,7 +102,7 @@ class Tickets extends React.Component {
     }
   }
 
-  getData = (firstTime=false) => {
+  getData = (firstTime = false) => {
     let start = this.state.startnum * this.state.perpage
     let tabledata = []
 
@@ -118,11 +118,9 @@ class Tickets extends React.Component {
       this.state.searchWord,
       this.state.searchDateWord
     )
-    if(firstTime)
-    {
-      data={};
+    if (firstTime) {
+      data = {};
     }
-    console.log('data',data);
     axios
       .post(
         "http://eshkolserver.azurewebsites.net/api/Dynamic/searchDocuments/requests",
@@ -132,10 +130,11 @@ class Tickets extends React.Component {
         }
       )
       .then((res) => {
-        console.log(res.data)
+        let response = res.data;
+        console.log("response: ", response)
         for (let i = start; i < start + vm.state.perpage; i++) {
-          if (res.data[i] !== undefined) {
-            tabledata.push(res.data[i])
+          if (response[i] !== undefined) {
+            tabledata.push(response[i])
           }
         }
         let maxpage = Math.floor(tabledata.length / vm.state.perpage) + 1
@@ -166,7 +165,7 @@ class Tickets extends React.Component {
       showDateSearch: showDateSearch,
       searchDateWord: searchDateWord
     })
-  this.getData(true);
+    this.getData(true);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -183,9 +182,8 @@ class Tickets extends React.Component {
 
         <div className="tickets">
           <table
-            className={`table-responsive ${
-              this.props.currentLang === "hebrew" ? "text-right" : "text-center"
-            }`}
+            className={`table-responsive ${this.props.currentLang === "hebrew" ? "text-right" : "text-center"
+              }`}
           >
             <thead>
               <tr>
@@ -210,9 +208,8 @@ class Tickets extends React.Component {
                   <td
                     key={i}
                     width="170"
-                    className={`${
-                      this.state.showDateSearch[i] ? "active" : ""
-                    }`}
+                    className={`${this.state.showDateSearch[i] ? "active" : ""
+                      }`}
                   >
                     {this.state.searchDateWord[i] === null && (
                       <div

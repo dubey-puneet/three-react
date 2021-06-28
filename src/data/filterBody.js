@@ -1,35 +1,35 @@
 const originObj = {
   "Full name": "",
   "Id number": "",
-  "partner name": "",
-  "partner id": "",
-  agent: "",
-  "agent number": "",
   "insurance company": "",
   "program name": "",
-  "start of insurance": "",
   "Suggestion premia": "",
   "Actual premia": "",
-  "Number of polisa": "",
   "Pending notes": "",
+  "start of insurance": "",
   "Date of insurance": "",
   "Sent to insurance companies": "",
   "Date of status check": "",
-  "First payment": "",
-  "Payment after 3 months": "",
-  "Payment after year": "",
-  "Outer cancelation": "",
-  Company: "",
-  "Polisa num": "",
-  "Polica type": "",
   "Sent date": "",
-  "Active client in Kedem": "",
-  "Twisting tag": "",
-  "Free notes": "",
-  "Product name to goals": "",
-  "Phone meeting": "",
-  "Fast start": "",
-  Id: ""
+  // "partner name": "",
+  // "partner id": "",
+  // "agent": "",
+  // "agent number": "",
+  // "Number of polisa": "",
+  // "First payment": "",
+  // "Payment after 3 months": "",
+  // "Payment after year": "",
+  // "Outer cancelation": "",
+  // "Company": "",
+  // "Polisa num": "",
+  // "Polica type": "",
+  // "Active client in Kedem": "",
+  // "Twisting tag": "",
+  // "Free notes": "",
+  // "Product name to goals": "",
+  // "Phone meeting": "",
+  // "Fast start": "",
+  // "Id": ""
 }
 export const filterBody = (
   stringField,
@@ -40,7 +40,7 @@ export const filterBody = (
   for (let i = 0; i < searchWord.length; i++) {
     let j = stringField[i]
 
-    if (searchWord[i] !== null) {
+    if (searchWord[i] !== null  ) {
       originObj[j] = searchWord[i]
     } else {
       delete originObj[j]
