@@ -23,6 +23,7 @@ export class TicketsModal extends Component {
     this.setState(obj)
   }
   render() {
+    const { isAdmin } = this.props.userDetails
     return (
       <div>
         <Modal
@@ -47,6 +48,7 @@ export class TicketsModal extends Component {
                   </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
+                  disabled={!isAdmin}
                   value={this.state.selectDateTime}
                   placeholder="dd/mm/yyyy HH:mm"
                   aria-describedby="basic-addon1"
@@ -70,23 +72,23 @@ export class TicketsModal extends Component {
             </div>
             <div className="item">
               <label>Status</label>
-              <input type="text" defaultValue="Registered" />
+              <input disabled={!isAdmin} type="text" defaultValue="Registered" />
             </div>
             <div className="item">
               <label>ID Number</label>
-              <input type="text" defaultValue="123456" />
+              <input disabled={!isAdmin} type="text" defaultValue="123456" />
             </div>
             <div className="item">
               <label>First Name</label>
-              <input type="text" defaultValue="First" />
+              <input disabled={!isAdmin} type="text" defaultValue="First" />
             </div>
             <div className="item">
               <label>Last Name</label>
-              <input type="text" defaultValue="Last" />
+              <input disabled={!isAdmin} type="text" defaultValue="Last" />
             </div>
             <div className="item">
               <label>Rejects</label>
-              <textarea rows="14">
+              <textarea rows="14" disabled={!isAdmin}>
                 Tristique dui justo tortor sagittis pharetra. Amet eget et
                 scelerisque tellus sed vestibulum vel amet. Arcu nibh tortor
                 cras blandit malesuada consectetur egestas morbi sit. Diam id
@@ -110,6 +112,7 @@ export class TicketsModal extends Component {
                   </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
+                  disabled={!isAdmin}
                   placeholder="dd/mm/yyyy"
                   aria-describedby="basic-addon2"
                   value={this.state.selectDate}
@@ -132,7 +135,7 @@ export class TicketsModal extends Component {
             </div>
             <div className="item">
               <label>Premia</label>
-              <input type="text" defaultValue="Premia" />
+              <input disabled={!isAdmin} type="text" defaultValue="Premia" />
             </div>
             <div style={{ textAlign: "center" }}>
               <span className="btn" onClick={() => this.props.handle(false)}>

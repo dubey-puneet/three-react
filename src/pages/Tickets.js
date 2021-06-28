@@ -175,7 +175,7 @@ class Tickets extends React.Component {
   }
 
   render() {
-    const { t } = this.props
+    const { t, user } = this.props
     return (
       <div>
         <Header />
@@ -277,6 +277,7 @@ class Tickets extends React.Component {
           <TicketsModal
             showModal={this.state.showModal}
             handle={this.handleModal}
+            userDetails={user}
           />
           {this.state.tabledata.length > 0 && (
             <div className="pagination">
