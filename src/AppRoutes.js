@@ -8,7 +8,6 @@ const Tickets = lazy(() => import("./pages/Tickets"))
 const Error404 = lazy(() => import("./pages/Error404"))
 
 function AppRoutes(props) {
-  console.log(props)
   return (
     <Suspense fallback={<Spinner />}>
       <Switch>
@@ -18,7 +17,7 @@ function AppRoutes(props) {
           exact
           path="/tickets"
           render={() =>
-            props.currentUser === null ? <Redirect to="/login" /> : <Tickets user={props.currentUser}/>
+            props.currentUser === null ? <Redirect to="/login" /> : <Tickets />
           }
         />
         <Route

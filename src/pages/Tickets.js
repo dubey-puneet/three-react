@@ -66,14 +66,15 @@ class Tickets extends React.Component {
       searchWord: [],
       showDateSearch: [],
       searchDateWord: [],
-      rowIndex: 0,
+
       showModal: false,
 
       tabledata: [],
       pagenum: 1,
       maxpage: 100,
       startnum: 0,
-      perpage: 20
+      perpage: 20,
+      ticketData: {}
     }
   }
 
@@ -87,8 +88,9 @@ class Tickets extends React.Component {
     })
   }
 
-  handleModal = (index, param) => {
-    this.setState({ showModal: param, rowIndex: index })
+  handleModal = (ticket, param) => {
+    console.log(ticket);
+    this.setState({ showModal: param, ticketData: ticket })
   }
 
   setPageNum = (event) => {
@@ -131,7 +133,7 @@ class Tickets extends React.Component {
       )
       .then((res) => {
         let response = res.data;
-        console.log(res.data)
+        console.log("response: ", response)
         for (let i = start; i < start + vm.state.perpage; i++) {
           if (response[i] !== undefined) {
             tabledata.push(response[i])
@@ -175,7 +177,7 @@ class Tickets extends React.Component {
   }
 
   render() {
-    const { t, user } = this.props
+    const { t } = this.props
     return (
       <div>
         <Header />
@@ -263,7 +265,7 @@ class Tickets extends React.Component {
             <tbody>
               {this.state.tabledata.length > 0 &&
                 this.state.tabledata.map((value, index) => (
-                  <tr key={index} onClick={(e) => this.handleModal(index, true)}>
+                  <tr key={index} onClick={() => this.handleModal(value, true)}>
                     {stringFieldArr.map((val, i) => (
                       <td key={i}>{value[val]}</td>
                     ))}
@@ -276,10 +278,10 @@ class Tickets extends React.Component {
           </table>
           <TicketsModal
             showModal={this.state.showModal}
+            data={this.state.ticketData}
             handle={this.handleModal}
-            tabledata={this.state.tabledata}
-            rowIndex={this.state.rowIndex}
-            userDetails={user}
+            token={this.props.currentUser.token}
+            isAdmin={this.props.currentUser.isAdmin}
           />
           {this.state.tabledata.length > 0 && (
             <div className="pagination">

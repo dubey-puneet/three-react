@@ -5,107 +5,212 @@ import { FiX, FiCalendar } from "react-icons/fi"
 import CalendarTime from "../components/CalendarTime"
 import CalendarDate from "../components/CalendarDate"
 
+import { connect } from "react-redux"
+import { updateTicketForm, updateTicketFormControls } from "./../utils/redux/user/user.action";
+
 import "../assets/styles/_tickets.scss"
 import "../assets/styles/_ticketsmodal.scss"
-import axios from "axios"
+
+const inputFields = [
+  {
+    label: "Active client in Kedem",
+    name: "Active client in Kedem",
+  },
+  {
+    label: "Actual premia",
+    name: "Actual premia",
+  },
+  {
+    label: "Company",
+    name: "Company",
+  },
+  {
+    label: "Date of insurance",
+    name: "Date of insurance",
+    type: 'datetime'
+  },
+  {
+    label: "Date of status check",
+    name: "Date of status check",
+    type: 'datetime'
+  },
+  {
+    label: "Fast start",
+    name: "Fast start",
+  },
+  {
+    label: "First payment",
+    name: "First payment",
+  },
+  {
+    label: "Free notes",
+    name: "Free notes",
+  },
+  {
+    label: "Full name",
+    name: "Full name",
+  },
+  {
+    label: "Number of polisa",
+    name: "Number of polisa",
+  },
+  {
+    label: "Outer cancelation",
+    name: "Outer cancelation",
+  },
+  {
+    label: "Payment after 3 months",
+    name: "Payment after 3 months",
+  },
+  {
+    label: "Payment after year",
+    name: "Payment after year",
+  },
+  {
+    label: "Pending notes",
+    name: "Pending notes",
+  },
+  {
+    label: "Phone meeting",
+    name: "Phone meeting",
+  },
+  {
+    label: "Polica type",
+    name: "Polica type",
+  },
+  {
+    label: "Polisa num",
+    name: "Polisa num"
+  },
+  {
+    label: "Product name to goals",
+    name: "Product name to goals"
+  },
+  {
+    label: "Sent date",
+    name: "Sent date"
+  },
+  {
+    label: "Sent to insurance companies",
+    name: "Sent to insurance companies",
+    type: 'datetime'
+  },
+  {
+    label: "Suggestion premia",
+    name: "Suggestion premia"
+  },
+  {
+    label: "Twisting tag",
+    name: "Twisting tag"
+  },
+  {
+    label: "agent",
+    name: "agent"
+  },
+  {
+    label: "agent number",
+    name: "agent number"
+  },
+  {
+    label: "insurance company",
+    name: "insurance company"
+  },
+  {
+    label: "partner id",
+    name: "partner id"
+  },
+  {
+    label: "partner name",
+    name: "partner name"
+  },
+  {
+    label: "program name",
+    name: "program name"
+  },
+  {
+    label: "start of insurance",
+    name: "start of insurance",
+    type: 'datetime'
+  },
+  {
+    label: "submission date",
+    name: "submission date",
+    type: 'datetime'
+  },
+  {
+    label: "submission month",
+    name: "submission month"
+  }
+];
+
 
 export class TicketsModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      // State for the form elements
       selectDateTime: "",
-      type: "document",
-      status: 'Registered',
-      idNumber: '123456',
-      firstName: 'First',
-      lastName: 'Last',
-      rejects: 'Tristique dui justo tortor sagittis pharetra. Amet eget et scelerisque tellus sed vestibulum vel amet. Arcu nibh tortor cras blandit malesuada consectetur egestas morbi sit. Diam id enim, turpis euismod massa. Fringilla eleifend ut vitae aliquet sagittis. Sed orci, morbi tempor ultricies tempus ornare id orci. Consectetur semper scelerisque gravida nunc risus aliquet consequat nam. Risus in venenatis amet, proin duis.',
-      premia: 'Premia',
       showCalendarTime: false,
+      
+      calender: {},
+
       selectDate: "",
       showCalendar: false,
 
-      // Controls
-      documentId: 'Details',
-      displayName: 'Details',
-      isSimple: true,
-      documentType: 'div',
-      
+      formData: props.data,
+
+       // Controls
+       documentId: 'Details',
+       displayName: 'Details',
+       isSimple: true,
+       documentType: 'div',
     }
   }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log({nextProps});
+    this.setState({
+      formData: nextProps.data
+    })
+  }
+
+
   setStrSearch = (obj) => {
+    console.log(obj);
     this.setState(obj)
   }
 
-  callApi(type, idNumber, data) {
-    const token= this.props.userDetails.token;
-    const headers = {
-        "content-type": "application/json",
-        Authorization: "Bearer " + token
+  handleChange = (event) => {
+    const {target: {name, value}} = event;
+    console.log(name, value);
+    this.setState({
+      formData : {
+        ...this.state.formData,
+        [name]: value
       }
-
-    axios.post(`http://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/`+type+`/`+idNumber,data,{
-        headers: headers
-      })
-      .then(res => {
-        console.log(res)
-      })
+    })
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.rowIndex !== prevProps.rowIndex) {
-      const {tabledata, rowIndex} = this.props    
-
-      if (tabledata.length > 0 && rowIndex > 0) {
-
-        // Splitting the Full Name into an array with first name and last name
-        let results = []
-        const fName = tabledata[rowIndex]['Full name'].split(' ')
-        for(let i = 0; i < fName.length; i++) {
-          var strings = fName[i].split(" ");
-          results.push(strings[0]);
-        }
-
-        const data = tabledata[rowIndex]
-        console.log(data)
-        this.setState({
-          selectDateTime: data['Date of insurance'],
-          status:'',
-          idNumber: data['Id number'],
-          firstName: results[0],
-          lastName: results[1],
-          rejects: '',
-          premia: '',
-          selectDate: data['Date of insurance'].slice(0, 10)
-        })
-      }
-    }
-  }
-
-  // Handle the api call.
-  handleSubmit(e) {
-    e.preventDefault()
-    const {selectDateTime, status, idNumber, firstName, lastName, rejects, premia, type} = this.state
-    // Prepare data for sending
-    const data = {
-      id: {
-        id: idNumber,
-        type: status
+  handleDatePicker = (name, calObj) => {
+    this.setState({
+      calender: {
+        ...this.state.calender,
+        [name]: !this.state.calender[name]
       },
-      name: {
-        name: firstName + '' + lastName,
-        selectDateTime,
-        rejects,
-        premia
+      formData : {
+        ...this.state.formData,
+        [name]: calObj.selectDateTime
       }
-    }
-    
-    this.callApi(type, idNumber, data)
+    })
   }
 
-  handleControls(e) {
-    e.preventDefault()
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.submitForm(this.props.token, this.props.data["Id number"], this.state.formData);
+  }
+
+  handleSaveControlls = (e) => {
+    e.preventDefault();
+
     const formElements = document.querySelector('#form').children
     // console.log(formElements[8].firstChild.textContent)
     const {documentId, isSimple, documentType, displayName} = this.state
@@ -284,12 +389,63 @@ export class TicketsModal extends Component {
       }
     }
 
-    this.callApi('document_controls', documentId, data)
+    this.props.submitFormControls(this.props.token, this.props.data["Id number"], data);
   }
 
   render() {
-    const { isAdmin } = this.props.userDetails
-    const {selectDate, selectDateTime, status, idNumber, firstName, lastName, rejects, premia, showCalendar, showCalendarTime} = this.state
+
+    const { isAdmin } = this.props;
+
+    const fields = (input) => {
+
+      const { type } = input;
+      if (type === undefined) {
+        return (
+          <div className="item">
+            <label>{input.label}</label>
+            <input type="text" disabled={!isAdmin}   name={input.name} onChange={this.handleChange}  value={this.state.formData[input.label]} />
+          </div>
+        )
+      } 
+      else if (type === "datetime") {
+        return (
+          <div className="item">
+              <label>Acceptance Date</label>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="basic-addon1">
+                    <FiCalendar size={16} color="#061129" />
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  disabled={!isAdmin} 
+                  value={this.state.formData[input.label]}
+                  placeholder="dd/mm/yyyy HH:mm"
+                  aria-describedby="basic-addon1"
+                  name={input.name} 
+                  onClick={() =>
+                    this.setState({
+                      calender: {
+                        ...this.state.calender,
+                        [input.name]: !this.state.calender[input.name]
+                      }
+                    })
+                  }
+                />
+
+                {this.state.calender[input.name] && (
+                  <CalendarTime handle={(obj) => this.handleDatePicker(input.name, obj) } param="Select" />
+                )}
+              </InputGroup>
+            </div>
+        )
+      }
+      
+    }
+
+    const formFields = (field) => field.map((item, index) =>  fields(item));
+
+
     return (
       <div>
         <Modal
@@ -305,101 +461,15 @@ export class TicketsModal extends Component {
             <Modal.Title>Details</Modal.Title>
           </Modal.Header>
           <Modal.Body id="form">
-            <div className="item">
-              <label>Acceptance Date</label>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="basic-addon1">
-                    <FiCalendar size={16} color="#061129" />
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  id="datetime"
-                  disabled={!isAdmin}
-                  value={selectDateTime}
-                  placeholder="dd/mm/yyyy HH:mm"
-                  aria-describedby="basic-addon1"
-                  onClick={() =>
-                    this.setState({
-                      showCalendarTime: !showCalendarTime
-                    })
-                  }
-                  onChange={(e) =>
-                    this.setState({
-                      showCalendarTime: false,
-                      selectDateTime: e.target.value
-                    })
-                  }
-                />
-
-                {this.state.showCalendarTime && (
-                  <CalendarTime handle={this.setStrSearch} param="Select" />
-                )}
-              </InputGroup>
-            </div>
-            <div className="item">
-              <label>Status</label>
-              <input disabled={!isAdmin} id="status" value={status} onChange={(e) => this.setState({ status: e.target.value })} type="text" />
-            </div>
-            <div className="item">
-              <label>ID Number</label>
-              <input disabled={!isAdmin} id="idNumber" value={idNumber} onChange={(e) => this.setState({ idNumber: e.target.value })} type="text" />
-            </div>
-            <div className="item">
-              <label>First Name</label>
-              <input disabled={!isAdmin} id="firstName" value={firstName} onChange={(e) => this.setState({ firstName: e.target.value })} type="text" />
-            </div>
-            <div className="item">
-              <label>Last Name</label>
-              <input disabled={!isAdmin} id="lastName" value={lastName} onChange={(e) => this.setState({ lastName: e.target.value })} type="text" />
-            </div>
-            <div className="item">
-              <label>Rejects</label>
-              <textarea rows="10" id="rejects" disabled={!isAdmin} value={rejects}>
-              </textarea>
-            </div>
-            <div>
-              <label>Register Date</label>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="basic-addon2">
-                    <FiCalendar size={16} color="#061129" />
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  id="date"
-                  disabled={!isAdmin}
-                  placeholder="dd/mm/yyyy"
-                  aria-describedby="basic-addon2"
-                  value={selectDate}
-                  onClick={() =>
-                    this.setState({
-                      showCalendar: !showCalendar
-                    })
-                  }
-                  onChange={(e) =>
-                    this.setState({
-                      showCalendar: false,
-                      selectDate: e.target.value
-                    })
-                  }
-                />
-                {this.state.showCalendar && (
-                  <CalendarDate handle={this.setStrSearch} param="Select" />
-                )}
-              </InputGroup>
-            </div>
-            <div className="item">
-              <label>Premia</label>
-              <input disabled={!isAdmin} id="premia" value={premia} onChange={(e) => this.setState({premia: e.target.value})} type="text" />
-            </div>
-            <div style={{ textAlign: "center" }} id="actions">
-              <span className="btn" id="btn-1" onClick={(e) => this.handleSubmit(e)}>
+            {formFields(inputFields)}
+            
+            <div style={{ textAlign: "center", display: "flex" }} id="actions">
+              <span className="btn" id="btn-1" onClick={this.handleSubmit}>
                 Save
               </span>
 
               {/* Extra button */}
-              <span className="btn btn-2" id="btn-2" onClick={(e) => this.handleControls(e)}>
+              <span className="btn btn-2" id="btn-2" onClick={this.handleSaveControlls}>
                 Save Controls
               </span>
             </div>
@@ -410,4 +480,16 @@ export class TicketsModal extends Component {
   }
 }
 
-export default TicketsModal
+const mapStateToProps = state => ({
+  error: state.user.error,
+  response: state.user.response,
+});
+
+const mapDispatchToProps = dispatch => ({
+  submitForm: (token, id, data) => dispatch(updateTicketForm(token, id, data)),
+  submitFormControls: (token, id, data) => dispatch(updateTicketFormControls(token, id, data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TicketsModal);
+
+// export default TicketsModal
