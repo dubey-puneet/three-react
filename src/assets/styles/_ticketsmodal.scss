@@ -44,7 +44,7 @@
       border: 0;
       background: #f9f9f9;
     }
-    .btn {
+    .btn, .btn-2 {
       font-family: RubikMedium;
       font-size: 16px;
       color: #fff;
@@ -54,6 +54,13 @@
       border-radius: 8px;
       margin: auto;
     }
+
+    // Save controls buttons
+    .btn-2 {
+      margin-left: 20px;
+      background-color: #0069ff;
+    }
+
     .form-control {
       width: auto;
       padding: 16px;

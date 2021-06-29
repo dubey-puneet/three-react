@@ -131,7 +131,6 @@ class Tickets extends React.Component {
       )
       .then((res) => {
         let response = res.data;
-        console.log("response: ", response)
         for (let i = start; i < start + vm.state.perpage; i++) {
           if (response[i] !== undefined) {
             tabledata.push(response[i])
