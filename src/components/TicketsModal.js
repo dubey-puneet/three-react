@@ -7,22 +7,258 @@ import CalendarDate from "../components/CalendarDate"
 
 import "../assets/styles/_tickets.scss"
 import "../assets/styles/_ticketsmodal.scss"
+import axios from "axios"
 
 export class TicketsModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      // State for the form elements
       selectDateTime: "",
+      type: "document",
+      status: 'Registered',
+      idNumber: '123456',
+      firstName: 'First',
+      lastName: 'Last',
+      rejects: 'Tristique dui justo tortor sagittis pharetra. Amet eget et scelerisque tellus sed vestibulum vel amet. Arcu nibh tortor cras blandit malesuada consectetur egestas morbi sit. Diam id enim, turpis euismod massa. Fringilla eleifend ut vitae aliquet sagittis. Sed orci, morbi tempor ultricies tempus ornare id orci. Consectetur semper scelerisque gravida nunc risus aliquet consequat nam. Risus in venenatis amet, proin duis.',
+      premia: 'Premia',
       showCalendarTime: false,
-
       selectDate: "",
-      showCalendar: false
+      showCalendar: false,
+
+      // Controls
+      documentId: 'Details',
+      displayName: 'Details',
+      isSimple: true,
+      documentType: 'div',
+      
     }
   }
   setStrSearch = (obj) => {
     this.setState(obj)
   }
+
+  callApi(type, idNumber, data) {
+    const token= this.props.userDetails.token;
+    const headers = {
+        "content-type": "application/json",
+        Authorization: "Bearer " + token
+      }
+
+    axios.post(`http://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/`+type+`/`+idNumber,data,{
+        headers: headers
+      })
+      .then(res => {
+        console.log(res)
+      })
+  }
+
+  // Handle the api call.
+  handleSubmit(e) {
+    e.preventDefault()
+    const {selectDateTime, status, idNumber, firstName, lastName, rejects, premia, type} = this.state
+    // Prepare data for sending
+    const data = {
+      id: {
+        id: idNumber,
+        type: status
+      },
+      name: {
+        name: firstName + '' + lastName,
+        selectDateTime,
+        rejects,
+        premia
+      }
+    }
+    
+    this.callApi(type, idNumber, data)
+  }
+
+  handleControls(e) {
+    e.preventDefault()
+    const formElements = document.querySelector('#form').children
+    // console.log(formElements[8].firstChild.textContent)
+    const {documentId, isSimple, documentType, displayName} = this.state
+
+    // Preparing the data
+    const data = {
+      controls: {
+        0: {
+          controls: [
+            {
+              controls: [
+                {
+                  context: "datetime",
+                  displayName: "datetime",
+                  id: "id.datetime",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[0].firstChild.textContent,
+              id: formElements[0].children[1].children[1].id,
+              isSimple,
+              type: formElements[0].localName
+            },
+            {
+              controls: [
+                {
+                  context: "status",
+                  displayName: "status",
+                  id: "id.status",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[1].firstChild.textContent,
+              id: formElements[1].children[1].id,
+              isSimple,
+              type: formElements[1].localName
+            },
+            {
+              controls: [
+                {
+                  context: "idNumber",
+                  displayName: "idNumber",
+                  id: "id.idNumber",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[2].firstChild.textContent,
+              id: formElements[2].children[1].id,
+              isSimple,
+              type: formElements[2].localName
+            },
+            {
+              controls: [
+                {
+                  context: "firstName",
+                  displayName: "firstName",
+                  id: "id.firstName",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[3].firstChild.textContent,
+              id: formElements[3].children[1].id,
+              isSimple,
+              type: formElements[3].localName
+            },
+            {
+              controls: [
+                {
+                  context: "lastName",
+                  displayName: "lastName",
+                  id: "id.lastName",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[4].firstChild.textContent,
+              id: formElements[4].children[1].id,
+              isSimple,
+              type: formElements[4].localName
+            },
+            {
+              controls: [
+                {
+                  context: "rejects",
+                  displayName: "rejects",
+                  id: "id.rejects",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[5].firstChild.textContent,
+              id: formElements[5].children[1].id,
+              isSimple,
+              type: formElements[5].localName
+            },
+            {
+              controls: [
+                {
+                  context: "date",
+                  displayName: "date",
+                  id: "id.date",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[6].firstChild.textContent,
+              id: formElements[6].children[1].children[1].id,
+              isSimple,
+              type: formElements[6].localName
+            },
+            {
+              controls: [
+                {
+                  context: "premia",
+                  displayName: "premia",
+                  id: "id.premia",
+                  isSimple: false,
+                  type: "input"
+                }
+              ],
+              displayName: formElements[7].firstChild.textContent,
+              id: formElements[7].children[1].id,
+              isSimple,
+              type: formElements[7].localName
+            },
+          ],
+          id: documentId,
+          displayName,
+          isSimple,
+          type: documentType
+        },
+        1: {
+          controls: [
+            {
+              controls: [
+                {
+                  actionName: formElements[8].firstChild.textContent,
+                  displayName: formElements[8].firstChild.textContent,
+                  id: formElements[8].firstChild.id,
+                  type: formElements[8].firstChild.nodeName.toLocaleLowerCase(),
+                  isButton: false,
+                  isSimple: false,
+                }
+              ],
+              displayName: "",
+              id: `${formElements[8].id}_${formElements[8].firstChild.id}`,
+              isSimple,
+              type: formElements[8].localName
+            },
+            {
+              controls: [
+                {
+                  actionName: formElements[8].children[1].textContent,
+                  displayName: formElements[8].children[1].textContent,
+                  id: formElements[8].children[1].id,
+                  type: formElements[8].children[1].nodeName.toLocaleLowerCase(),
+                  isButton: false,
+                  isSimple: false,
+                }
+              ],
+              displayName: "",
+              id: `${formElements[8].id}_${formElements[8].children[1].id}`,
+              isSimple,
+              type: formElements[8].localName
+            }
+          ],
+          id: formElements[8].id,
+          displayName: 'Save',
+          isSimple,
+          type: formElements[8].localName
+        }
+      }
+    }
+
+    this.callApi('document_control', documentId, data)
+  }
   render() {
+    const { isAdmin } = this.props.userDetails
+    const {selectDate, selectDateTime, status, idNumber, firstName, lastName, rejects, premia, showCalendar, showCalendarTime} = this.state
     return (
       <div>
         <Modal
@@ -37,7 +273,7 @@ export class TicketsModal extends Component {
             />
             <Modal.Title>Details</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body id="form">
             <div className="item">
               <label>Acceptance Date</label>
               <InputGroup>
@@ -47,12 +283,14 @@ export class TicketsModal extends Component {
                   </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
-                  value={this.state.selectDateTime}
+                  id="datetime"
+                  disabled={!isAdmin}
+                  value={selectDateTime}
                   placeholder="dd/mm/yyyy HH:mm"
                   aria-describedby="basic-addon1"
                   onClick={() =>
                     this.setState({
-                      showCalendarTime: !this.state.showCalendarTime
+                      showCalendarTime: !showCalendarTime
                     })
                   }
                   onChange={(e) =>
@@ -70,35 +308,23 @@ export class TicketsModal extends Component {
             </div>
             <div className="item">
               <label>Status</label>
-              <input type="text" defaultValue="Registered" />
+              <input disabled={!isAdmin} id="status" value={status} onChange={(e) => this.setState({ status: e.target.value })} type="text" />
             </div>
             <div className="item">
               <label>ID Number</label>
-              <input type="text" defaultValue="123456" />
+              <input disabled={!isAdmin} id="idNumber" value={idNumber} onChange={(e) => this.setState({ idNumber: e.target.value })} type="text" />
             </div>
             <div className="item">
               <label>First Name</label>
-              <input type="text" defaultValue="First" />
+              <input disabled={!isAdmin} id="firstName" value={firstName} onChange={(e) => this.setState({ firstName: e.target.value })} type="text" />
             </div>
             <div className="item">
               <label>Last Name</label>
-              <input type="text" defaultValue="Last" />
+              <input disabled={!isAdmin} id="lastName" value={lastName} onChange={(e) => this.setState({ lastName: e.target.value })} type="text" />
             </div>
             <div className="item">
               <label>Rejects</label>
-              <textarea rows="14">
-                Tristique dui justo tortor sagittis pharetra. Amet eget et
-                scelerisque tellus sed vestibulum vel amet. Arcu nibh tortor
-                cras blandit malesuada consectetur egestas morbi sit. Diam id
-                enim, turpis euismod massa. Fringilla eleifend ut vitae aliquet
-                sagittis. Sed orci, morbi tempor ultricies tempus ornare id
-                orci. Consectetur semper scelerisque gravida nunc risus aliquet
-                consequat nam. Risus in venenatis amet, proin duis. Curabitur
-                sem commodo mauris tempor eget fusce porta ante risus. Odio non,
-                tempus dignissim convallis pharetra nulla elit. Pretium dui
-                tristique suscipit rhoncus tincidunt vel lectus. Quisque dui vel
-                nisl luctus nam maecenas cursus ut non. Tempor nulla orci, eget
-                enim ipsum nunc.
+              <textarea rows="10" id="rejects" disabled={!isAdmin} value={rejects}>
               </textarea>
             </div>
             <div>
@@ -110,12 +336,14 @@ export class TicketsModal extends Component {
                   </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
+                  id="date"
+                  disabled={!isAdmin}
                   placeholder="dd/mm/yyyy"
                   aria-describedby="basic-addon2"
-                  value={this.state.selectDate}
+                  value={selectDate}
                   onClick={() =>
                     this.setState({
-                      showCalendar: !this.state.showCalendar
+                      showCalendar: !showCalendar
                     })
                   }
                   onChange={(e) =>
@@ -132,11 +360,16 @@ export class TicketsModal extends Component {
             </div>
             <div className="item">
               <label>Premia</label>
-              <input type="text" defaultValue="Premia" />
+              <input disabled={!isAdmin} id="premia" value={premia} onChange={(e) => this.setState({premia: e.target.value})} type="text" />
             </div>
-            <div style={{ textAlign: "center" }}>
-              <span className="btn" onClick={() => this.props.handle(false)}>
+            <div style={{ textAlign: "center" }} id="actions">
+              <span className="btn" id="btn-1" onClick={(e) => this.handleSubmit(e)}>
                 Save
+              </span>
+
+              {/* Extra button */}
+              <span className="btn btn-2" id="btn-2" onClick={(e) => this.handleControls(e)}>
+                Save Controls
               </span>
             </div>
           </Modal.Body>
