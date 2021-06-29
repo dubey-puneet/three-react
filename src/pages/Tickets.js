@@ -66,7 +66,7 @@ class Tickets extends React.Component {
       searchWord: [],
       showDateSearch: [],
       searchDateWord: [],
-
+      rowIndex: 0,
       showModal: false,
 
       tabledata: [],
@@ -87,8 +87,8 @@ class Tickets extends React.Component {
     })
   }
 
-  handleModal = (param) => {
-    this.setState({ showModal: param })
+  handleModal = (index, param) => {
+    this.setState({ showModal: param, rowIndex: index })
   }
 
   setPageNum = (event) => {
@@ -131,6 +131,7 @@ class Tickets extends React.Component {
       )
       .then((res) => {
         let response = res.data;
+        console.log(res.data)
         for (let i = start; i < start + vm.state.perpage; i++) {
           if (response[i] !== undefined) {
             tabledata.push(response[i])
@@ -262,7 +263,7 @@ class Tickets extends React.Component {
             <tbody>
               {this.state.tabledata.length > 0 &&
                 this.state.tabledata.map((value, index) => (
-                  <tr key={index} onClick={() => this.handleModal(true)}>
+                  <tr key={index} onClick={(e) => this.handleModal(index, true)}>
                     {stringFieldArr.map((val, i) => (
                       <td key={i}>{value[val]}</td>
                     ))}
@@ -276,6 +277,8 @@ class Tickets extends React.Component {
           <TicketsModal
             showModal={this.state.showModal}
             handle={this.handleModal}
+            tabledata={this.state.tabledata}
+            rowIndex={this.state.rowIndex}
             userDetails={user}
           />
           {this.state.tabledata.length > 0 && (
