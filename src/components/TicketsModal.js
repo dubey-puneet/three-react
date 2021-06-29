@@ -3,7 +3,6 @@ import { Modal, InputGroup, FormControl } from "react-bootstrap"
 import { FiX, FiCalendar } from "react-icons/fi"
 
 import CalendarTime from "../components/CalendarTime"
-import CalendarDate from "../components/CalendarDate"
 
 import { connect } from "react-redux"
 import { updateTicketForm } from "./../utils/redux/user/user.action";
@@ -207,12 +206,12 @@ export class TicketsModal extends Component {
 
     const { isAdmin } = this.props;
 
-    const fields = (input) => {
+    const fields = (input, index) => {
 
       const { type } = input;
       if (type === undefined) {
         return (
-          <div className="item">
+          <div className="item" key={index}>
             <label>{input.label}</label>
             <input type="text" disabled={!isAdmin}   name={input.name} onChange={this.handleChange}  value={this.state.formData[input.label]} />
           </div>
@@ -220,7 +219,7 @@ export class TicketsModal extends Component {
       } 
       else if (type === "datetime") {
         return (
-          <div className="item">
+          <div className="item" key={index}>
               <label>Acceptance Date</label>
               <InputGroup>
                 <InputGroup.Prepend>
@@ -233,7 +232,9 @@ export class TicketsModal extends Component {
                   value={this.state.formData[input.label]}
                   placeholder="dd/mm/yyyy HH:mm"
                   aria-describedby="basic-addon1"
-                  name={input.name} 
+                  name={input.name}
+                  // To remove the console errors.
+                  onChange={() => {}}
                   onClick={() =>
                     this.setState({
                       calender: {
@@ -254,7 +255,7 @@ export class TicketsModal extends Component {
       
     }
 
-    const formFields = (field) => field.map((item, index) =>  fields(item));
+    const formFields = (field) => field.map((item, index) =>  fields(item, index));
 
 
     return (
