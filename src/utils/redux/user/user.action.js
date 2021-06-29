@@ -1,5 +1,6 @@
 import ActionsType from "./../utils/actions.type"
 import axios from "axios"
+import { updateTableData } from "../table/table.action";
 
 
 export const setCurrentUser = (user) => ({
@@ -25,7 +26,7 @@ const apiSuccess = data => {
   };
 };
 
-export const updateTicketForm = (token, id, data) => {
+export const updateTicketForm = (token, id, data, ticket) => {
   console.log({token, id, data});
   return dispatch => {
     let headers = {
@@ -35,6 +36,8 @@ export const updateTicketForm = (token, id, data) => {
     axios.post(`http://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/document/${id}`, data, { headers: headers })
       .then(resp => {
         dispatch(apiSuccess(resp.data));
+        // Update the table data
+        dispatch(updateTableData(data, id, ticket))
       })
       .catch(err => {
         console.log(err.response);
@@ -43,21 +46,3 @@ export const updateTicketForm = (token, id, data) => {
   };
 }
 
-
-export const updateTicketFormControls = (token, id, data) => {
-  console.log({token, id, data});
-  return dispatch => {
-    let headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    };
-    axios.post(`http://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/document_controls/${id}`, data, { headers: headers })
-      .then(resp => {
-        dispatch(apiSuccess(resp.data));
-      })
-      .catch(err => {
-        console.log(err.response);
-        dispatch(apiError());
-      });
-  };
-}

@@ -6,7 +6,7 @@ import CalendarTime from "../components/CalendarTime"
 import CalendarDate from "../components/CalendarDate"
 
 import { connect } from "react-redux"
-import { updateTicketForm, updateTicketFormControls } from "./../utils/redux/user/user.action";
+import { updateTicketForm } from "./../utils/redux/user/user.action";
 
 import "../assets/styles/_tickets.scss"
 import "../assets/styles/_ticketsmodal.scss"
@@ -157,17 +157,11 @@ export class TicketsModal extends Component {
       showCalendar: false,
 
       formData: props.data,
-
-       // Controls
-       documentId: 'Details',
-       displayName: 'Details',
-       isSimple: true,
-       documentType: 'div',
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log({nextProps});
+    console.log({nextProps}, "props");
     this.setState({
       formData: nextProps.data
     })
@@ -205,191 +199,8 @@ export class TicketsModal extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.submitForm(this.props.token, this.props.data["Id number"], this.state.formData);
-  }
-
-  handleSaveControlls = (e) => {
-    e.preventDefault();
-
-    const formElements = document.querySelector('#form').children
-    // console.log(formElements[8].firstChild.textContent)
-    const {documentId, isSimple, documentType, displayName} = this.state
-
-    // Preparing the data
-    const data = {
-      controls: {
-        0: {
-          controls: [
-            {
-              controls: [
-                {
-                  context: "datetime",
-                  displayName: "datetime",
-                  id: "id.datetime",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[0].firstChild.textContent,
-              id: formElements[0].children[1].children[1].id,
-              isSimple,
-              type: formElements[0].localName
-            },
-            {
-              controls: [
-                {
-                  context: "status",
-                  displayName: "status",
-                  id: "id.status",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[1].firstChild.textContent,
-              id: formElements[1].children[1].id,
-              isSimple,
-              type: formElements[1].localName
-            },
-            {
-              controls: [
-                {
-                  context: "idNumber",
-                  displayName: "idNumber",
-                  id: "id.idNumber",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[2].firstChild.textContent,
-              id: formElements[2].children[1].id,
-              isSimple,
-              type: formElements[2].localName
-            },
-            {
-              controls: [
-                {
-                  context: "firstName",
-                  displayName: "firstName",
-                  id: "id.firstName",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[3].firstChild.textContent,
-              id: formElements[3].children[1].id,
-              isSimple,
-              type: formElements[3].localName
-            },
-            {
-              controls: [
-                {
-                  context: "lastName",
-                  displayName: "lastName",
-                  id: "id.lastName",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[4].firstChild.textContent,
-              id: formElements[4].children[1].id,
-              isSimple,
-              type: formElements[4].localName
-            },
-            {
-              controls: [
-                {
-                  context: "rejects",
-                  displayName: "rejects",
-                  id: "id.rejects",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[5].firstChild.textContent,
-              id: formElements[5].children[1].id,
-              isSimple,
-              type: formElements[5].localName
-            },
-            {
-              controls: [
-                {
-                  context: "date",
-                  displayName: "date",
-                  id: "id.date",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[6].firstChild.textContent,
-              id: formElements[6].children[1].children[1].id,
-              isSimple,
-              type: formElements[6].localName
-            },
-            {
-              controls: [
-                {
-                  context: "premia",
-                  displayName: "premia",
-                  id: "id.premia",
-                  isSimple: false,
-                  type: "input"
-                }
-              ],
-              displayName: formElements[7].firstChild.textContent,
-              id: formElements[7].children[1].id,
-              isSimple,
-              type: formElements[7].localName
-            },
-          ],
-          id: documentId,
-          displayName,
-          isSimple,
-          type: documentType
-        },
-        1: {
-          controls: [
-            {
-              controls: [
-                {
-                  actionName: formElements[8].firstChild.textContent,
-                  displayName: formElements[8].firstChild.textContent,
-                  id: formElements[8].firstChild.id,
-                  type: formElements[8].firstChild.nodeName.toLocaleLowerCase(),
-                  isButton: false,
-                  isSimple: false,
-                }
-              ],
-              displayName: "",
-              id: `${formElements[8].id}_${formElements[8].firstChild.id}`,
-              isSimple,
-              type: formElements[8].localName
-            },
-            {
-              controls: [
-                {
-                  actionName: formElements[8].children[1].textContent,
-                  displayName: formElements[8].children[1].textContent,
-                  id: formElements[8].children[1].id,
-                  type: formElements[8].children[1].nodeName.toLocaleLowerCase(),
-                  isButton: false,
-                  isSimple: false,
-                }
-              ],
-              displayName: "",
-              id: `${formElements[8].id}_${formElements[8].children[1].id}`,
-              isSimple,
-              type: formElements[8].localName
-            }
-          ],
-          id: formElements[8].id,
-          displayName: 'Save',
-          isSimple,
-          type: formElements[8].localName
-        }
-      }
-    }
-
-    this.props.submitFormControls(this.props.token, this.props.data["Id number"], data);
+    this.props.submitForm(this.props.token, this.props.data["Id number"], this.state.formData, this.props.rowId);
+    // this.props.handle()
   }
 
   render() {
@@ -467,11 +278,6 @@ export class TicketsModal extends Component {
               <span className="btn" id="btn-1" onClick={this.handleSubmit}>
                 Save
               </span>
-
-              {/* Extra button */}
-              <span className="btn btn-2" id="btn-2" onClick={this.handleSaveControlls}>
-                Save Controls
-              </span>
             </div>
           </Modal.Body>
         </Modal>
@@ -486,8 +292,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  submitForm: (token, id, data) => dispatch(updateTicketForm(token, id, data)),
-  submitFormControls: (token, id, data) => dispatch(updateTicketFormControls(token, id, data)),
+  submitForm: (token, id, data, ticketData) => dispatch(updateTicketForm(token, id, data, ticketData)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketsModal);

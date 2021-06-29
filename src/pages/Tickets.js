@@ -22,6 +22,7 @@ import TicketsModal from "../components/TicketsModal"
 
 import Header from "../layout/Header"
 import { filterBody } from "../data/filterBody"
+import { setTableData } from "../utils/redux/table/table.action"
 
 const dateFieldArr = [
   "start of insurance",
@@ -74,7 +75,8 @@ class Tickets extends React.Component {
       maxpage: 100,
       startnum: 0,
       perpage: 20,
-      ticketData: {}
+      ticketData: {},
+      ticketRowNumber: '',
     }
   }
 
@@ -88,9 +90,8 @@ class Tickets extends React.Component {
     })
   }
 
-  handleModal = (ticket, param) => {
-    console.log(ticket);
-    this.setState({ showModal: param, ticketData: ticket })
+  handleModal = (ticket, ticketRowNumber, param) => {
+    this.setState({ showModal: param, ticketData: ticket, ticketRowNumber })
   }
 
   setPageNum = (event) => {
@@ -133,12 +134,15 @@ class Tickets extends React.Component {
       )
       .then((res) => {
         let response = res.data;
-        console.log("response: ", response)
+        // Update the tabledata in the store
+        this.props.storeData(res.data)
+
         for (let i = start; i < start + vm.state.perpage; i++) {
           if (response[i] !== undefined) {
             tabledata.push(response[i])
           }
         }
+
         let maxpage = Math.floor(tabledata.length / vm.state.perpage) + 1
         vm.setState({ tabledata: tabledata, maxpage: maxpage })
       })
@@ -178,6 +182,7 @@ class Tickets extends React.Component {
 
   render() {
     const { t } = this.props
+    console.log(this.props.tableData)
     return (
       <div>
         <Header />
@@ -263,9 +268,9 @@ class Tickets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.tabledata.length > 0 &&
-                this.state.tabledata.map((value, index) => (
-                  <tr key={index} onClick={() => this.handleModal(value, true)}>
+              {this.props.tableData.length > 0 &&
+                this.props.tableData.map((value, index) => (
+                  <tr key={index} onClick={() => this.handleModal(value, index, true)}>
                     {stringFieldArr.map((val, i) => (
                       <td key={i}>{value[val]}</td>
                     ))}
@@ -280,6 +285,7 @@ class Tickets extends React.Component {
             showModal={this.state.showModal}
             data={this.state.ticketData}
             handle={this.handleModal}
+            rowId={this.state.ticketRowNumber}
             token={this.props.currentUser.token}
             isAdmin={this.props.currentUser.isAdmin}
           />
@@ -340,9 +346,14 @@ class Tickets extends React.Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, table }) => ({
   currentUser: user.currentUser,
-  currentLang: user.currentLang
+  currentLang: user.currentLang,
+  tableData: table.tableData
 })
 
-export default connect(mapStateToProps)(withTranslation()(Tickets))
+const mapDispatchToProps = dispatch => ({
+  storeData: (data) => dispatch(setTableData(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Tickets))
