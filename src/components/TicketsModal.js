@@ -63,8 +63,8 @@ export class TicketsModal extends Component {
         let results = []
         const fName = tabledata[rowIndex]['Full name'].split(' ')
         for(let i = 0; i < fName.length; i++) {
-          var words = fName[i].split(" ");
-          results.push(words[0]);
+          var strings = fName[i].split(" ");
+          results.push(strings[0]);
         }
 
         const data = tabledata[rowIndex]
