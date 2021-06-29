@@ -53,6 +53,36 @@ export class TicketsModal extends Component {
       })
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.rowIndex !== prevProps.rowIndex) {
+      const {tabledata, rowIndex} = this.props    
+
+      if (tabledata.length > 0 && rowIndex > 0) {
+
+        // Splitting the Full Name into an array with first name and last name
+        let results = []
+        const fName = tabledata[rowIndex]['Full name'].split(' ')
+        for(let i = 0; i < fName.length; i++) {
+          var words = fName[i].split(" ");
+          results.push(words[0]);
+        }
+
+        const data = tabledata[rowIndex]
+        console.log(data)
+        this.setState({
+          selectDateTime: data['Date of insurance'],
+          status:'',
+          idNumber: data['Id number'],
+          firstName: results[0],
+          lastName: results[1],
+          rejects: '',
+          premia: '',
+          selectDate: data['Date of insurance'].slice(0, 10)
+        })
+      }
+    }
+  }
+
   // Handle the api call.
   handleSubmit(e) {
     e.preventDefault()
@@ -254,8 +284,9 @@ export class TicketsModal extends Component {
       }
     }
 
-    this.callApi('document_control', documentId, data)
+    this.callApi('document_controls', documentId, data)
   }
+
   render() {
     const { isAdmin } = this.props.userDetails
     const {selectDate, selectDateTime, status, idNumber, firstName, lastName, rejects, premia, showCalendar, showCalendarTime} = this.state
