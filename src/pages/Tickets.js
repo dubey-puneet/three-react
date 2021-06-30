@@ -182,7 +182,7 @@ class Tickets extends React.Component {
 
   render() {
     const { t } = this.props
-    console.log(this.props.tableData)
+    console.log("tabeData ================> ", this.props.tableData)
     return (
       <div>
         <Header />

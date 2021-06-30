@@ -39,7 +39,7 @@ class Login extends React.Component {
           Password: this.state.password
         })
         .then((res) => {
-          console.log(res.data)
+          console.log("currentUser ==========> ", res.data)
           if (res.data) {
             this.props.setCurrentUser({
               username: res.data.fullName,

@@ -28,7 +28,6 @@ class Uploadfile extends React.Component {
   handlesubmit = () => {
     let data = new FormData()
     data.append("file", this.state.uploadedfile)
-    console.log(this.props.currentUser.token)
 
     let headers = {
       "content-type": "application/json",
@@ -44,7 +43,6 @@ class Uploadfile extends React.Component {
         }
       )
       .then((res) => {
-        console.log(res)
         this.setState({ progress: false, uploadedfile: null })
       })
       .catch((error) => {

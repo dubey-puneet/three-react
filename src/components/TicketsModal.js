@@ -51,6 +51,10 @@ const inputFields = [
     name: "Full name",
   },
   {
+    label: "Id number",
+    name: "Id number",
+  },
+  {
     label: "Number of polisa",
     name: "Number of polisa",
   },
@@ -161,7 +165,6 @@ export class TicketsModal extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log({nextProps}, "props");
     this.setState({
       formData: nextProps.data
     })
@@ -169,13 +172,11 @@ export class TicketsModal extends Component {
 
 
   setStrSearch = (obj) => {
-    console.log(obj);
     this.setState(obj)
   }
 
   handleChange = (event) => {
     const {target: {name, value}} = event;
-    console.log(name, value);
     this.setState({
       formData : {
         ...this.state.formData,
@@ -199,7 +200,7 @@ export class TicketsModal extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.submitForm(this.props.token, this.props.data["Id number"], this.state.formData, this.props.rowId);
+    this.props.submitForm(this.props.token, this.props.data["Id"], this.state.formData, this.props.rowId);
     // this.props.handle()
   }
 
@@ -212,15 +213,15 @@ export class TicketsModal extends Component {
       const { type } = input;
       if (type === undefined) {
         return (
-          <div className="item">
+          <div className="item" key={input.label}>
             <label>{input.label}</label>
-            <input type="text" disabled={!isAdmin}   name={input.name} onChange={this.handleChange}  value={this.state.formData[input.label]} />
+            <input type="text" disabled={!isAdmin}   name={input.name} onChange={this.handleChange}  defaultValue={this.state.formData[input.label]} />
           </div>
         )
       } 
       else if (type === "datetime") {
         return (
-          <div className="item">
+          <div className="item" key={input.label}>
               <label>Acceptance Date</label>
               <InputGroup>
                 <InputGroup.Prepend>
@@ -230,7 +231,7 @@ export class TicketsModal extends Component {
                 </InputGroup.Prepend>
                 <FormControl
                   disabled={!isAdmin} 
-                  value={this.state.formData[input.label]}
+                  defaultValue={this.state.formData[input.label]}
                   placeholder="dd/mm/yyyy HH:mm"
                   aria-describedby="basic-addon1"
                   name={input.name} 

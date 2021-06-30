@@ -27,14 +27,16 @@ const apiSuccess = data => {
 };
 
 export const updateTicketForm = (token, id, data, ticket) => {
-  console.log({token, id, data});
   return dispatch => {
     let headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     };
-    axios.post(`http://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/document/${id}`, data, { headers: headers })
+    console.log("id =============>", id)
+    console.log("data =============>", data)
+    axios.post(`https://eshkolserver.azurewebsites.net/api/Dynamic/StoreDocument/requests/${id}`, data, { headers: headers })
       .then(resp => {
+        console.log("response =============>", resp)
         dispatch(apiSuccess(resp.data));
         // Update the table data
         dispatch(updateTableData(data, id, ticket))
