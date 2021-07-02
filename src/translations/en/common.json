@@ -49,7 +49,8 @@
     "Product name to goals":"Product name to goals",
     "Phone meeting":"Phone meeting",
     "Fast start":"Fast start",
-	  "Id":"Id"
+	  "Id":"Id",
+    "Details":"Details"
   },
   "uploadfile": {
     "load data": "Load Data",

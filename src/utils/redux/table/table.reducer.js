@@ -1,5 +1,4 @@
 import ActionsType from "../utils/actions.type"
-import * as _ from 'lodash'
 const INITIAL_STATE = {
   tableData: []
 }
