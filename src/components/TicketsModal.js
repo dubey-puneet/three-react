@@ -3,8 +3,7 @@ import { Modal, InputGroup, FormControl } from "react-bootstrap"
 import { FiX, FiCalendar } from "react-icons/fi"
 
 import CalendarTime from "../components/CalendarTime"
-import CalendarDate from "../components/CalendarDate"
-
+import { withTranslation } from "react-i18next"
 import { connect } from "react-redux"
 import { updateTicketForm } from "./../utils/redux/user/user.action";
 
@@ -201,13 +200,11 @@ export class TicketsModal extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.submitForm(this.props.token, this.props.data["Id"], this.state.formData, this.props.rowId);
-    // this.props.handle()
   }
 
   render() {
 
-    const { isAdmin } = this.props;
-
+    const { isAdmin, t, i18n:{language}} = this.props;
     const fields = (input) => {
 
       const { type } = input;
@@ -215,7 +212,7 @@ export class TicketsModal extends Component {
         return (
           <div className="item" key={input.label}>
             <label>{input.label}</label>
-            <input type="text" disabled={!isAdmin}   name={input.name} onChange={this.handleChange}  defaultValue={this.state.formData[input.label]} />
+            <input type="text"  disabled={!isAdmin}  dir={(language==='en')?'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
           </div>
         )
       } 
@@ -270,7 +267,7 @@ export class TicketsModal extends Component {
               size={17}
               onClick={() => this.props.handle(false)}
             />
-            <Modal.Title>Details</Modal.Title>
+             <Modal.Title>{t("tickets.Details")}</Modal.Title>
           </Modal.Header>
           <Modal.Body id="form">
             {formFields(inputFields)}
@@ -296,6 +293,5 @@ const mapDispatchToProps = dispatch => ({
   submitForm: (token, id, data, ticketData) => dispatch(updateTicketForm(token, id, data, ticketData)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TicketsModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(TicketsModal));
 
-// export default TicketsModal

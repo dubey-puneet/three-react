@@ -49,7 +49,8 @@
     "Product name to goals": "שם מוצר ליעדים",
     "Phone meeting": "פגישה/טלפוני",
     "Fast start": "הפקה מהירה",
-    "Id": "מספר מזהה"
+    "Id": "מספר מזהה",
+    "Details":"פרטים"
   },
   "uploadfile": {
     "load data": "לטעון מידע",
