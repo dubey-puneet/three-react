@@ -153,7 +153,7 @@ export class TicketsModal extends Component {
     this.state = {
       selectDateTime: "",
       showCalendarTime: false,
-      
+
       calender: {},
 
       selectDate: "",
@@ -175,9 +175,9 @@ export class TicketsModal extends Component {
   }
 
   handleChange = (event) => {
-    const {target: {name, value}} = event;
+    const { target: { name, value } } = event;
     this.setState({
-      formData : {
+      formData: {
         ...this.state.formData,
         [name]: value
       }
@@ -190,7 +190,7 @@ export class TicketsModal extends Component {
         ...this.state.calender,
         [name]: !this.state.calender[name]
       },
-      formData : {
+      formData: {
         ...this.state.formData,
         [name]: calObj.selectDateTime
       }
@@ -204,55 +204,55 @@ export class TicketsModal extends Component {
 
   render() {
 
-    const { isAdmin, t, i18n:{language}} = this.props;
+    const { isAdmin, t, i18n: { language } } = this.props;
     const fields = (input) => {
 
       const { type } = input;
       if (type === undefined) {
         return (
           <div className="item" key={input.label}>
-            <label>{input.label}</label>
-            <input type="text"  disabled={!isAdmin}  dir={(language==='en')?'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
+            <label>{t(`tickets.${input.label}`)}</label>
+            <input type="text" disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
           </div>
         )
-      } 
+      }
       else if (type === "datetime") {
         return (
           <div className="item" key={input.label}>
-              <label>Acceptance Date</label>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="basic-addon1">
-                    <FiCalendar size={16} color="#061129" />
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  disabled={!isAdmin} 
-                  defaultValue={this.state.formData[input.label]}
-                  placeholder="dd/mm/yyyy HH:mm"
-                  aria-describedby="basic-addon1"
-                  name={input.name} 
-                  onClick={() =>
-                    this.setState({
-                      calender: {
-                        ...this.state.calender,
-                        [input.name]: !this.state.calender[input.name]
-                      }
-                    })
-                  }
-                />
+            <label>{t("tickets.submission date")}</label>
+            <InputGroup>
+              <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">
+                  <FiCalendar size={16} color="#061129" />
+                </InputGroup.Text>
+              </InputGroup.Prepend>
+              <FormControl
+                disabled={!isAdmin}
+                defaultValue={this.state.formData[input.label]}
+                placeholder="dd/mm/yyyy HH:mm"
+                aria-describedby="basic-addon1"
+                name={input.name}
+                onClick={() =>
+                  this.setState({
+                    calender: {
+                      ...this.state.calender,
+                      [input.name]: !this.state.calender[input.name]
+                    }
+                  })
+                }
+              />
 
-                {this.state.calender[input.name] && (
-                  <CalendarTime handle={(obj) => this.handleDatePicker(input.name, obj) } param="Select" />
-                )}
-              </InputGroup>
-            </div>
+              {this.state.calender[input.name] && (
+                <CalendarTime handle={(obj) => this.handleDatePicker(input.name, obj)} param="Select" />
+              )}
+            </InputGroup>
+          </div>
         )
       }
-      
+
     }
 
-    const formFields = (field) => field.map((item, index) =>  fields(item));
+    const formFields = (field) => field.map((item, index) => fields(item));
 
 
     return (
@@ -267,11 +267,11 @@ export class TicketsModal extends Component {
               size={17}
               onClick={() => this.props.handle(false)}
             />
-             <Modal.Title>{t("tickets.Details")}</Modal.Title>
+            <Modal.Title>{t("tickets.Details")}</Modal.Title>
           </Modal.Header>
           <Modal.Body id="form">
             {formFields(inputFields)}
-            
+
             <div style={{ textAlign: "center", display: "flex" }} id="actions">
               <span className="btn" id="btn-1" onClick={this.handleSubmit}>
                 Save
