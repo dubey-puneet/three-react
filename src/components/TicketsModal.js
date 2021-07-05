@@ -1,14 +1,15 @@
-import React, { Component } from "react"
-import { Modal, InputGroup, FormControl } from "react-bootstrap"
-import { FiX, FiCalendar } from "react-icons/fi"
+import React, { useState, Component, useEffect } from "react";
+import { Modal, InputGroup, FormControl } from "react-bootstrap";
+import { FiX, FiCalendar } from "react-icons/fi";
 
-import CalendarTime from "../components/CalendarTime"
-import { withTranslation } from "react-i18next"
-import { connect } from "react-redux"
+import CalendarTime from "../components/CalendarTime";
+import { connect } from "react-redux";
 import { updateTicketForm } from "./../utils/redux/user/user.action";
+import { useTranslation } from 'react-i18next';
 
-import "../assets/styles/_tickets.scss"
-import "../assets/styles/_ticketsmodal.scss"
+import "../assets/styles/_tickets.scss";
+import "../assets/styles/_ticketsmodal.scss";
+import { useSelector, useDispatch } from "react-redux";
 
 const inputFields = [
   {
@@ -26,12 +27,12 @@ const inputFields = [
   {
     label: "Date of insurance",
     name: "Date of insurance",
-    type: 'datetime'
+    type: "datetime",
   },
   {
     label: "Date of status check",
     name: "Date of status check",
-    type: 'datetime'
+    type: "datetime",
   },
   {
     label: "Fast start",
@@ -83,216 +84,190 @@ const inputFields = [
   },
   {
     label: "Polisa num",
-    name: "Polisa num"
+    name: "Polisa num",
   },
   {
     label: "Product name to goals",
-    name: "Product name to goals"
+    name: "Product name to goals",
   },
   {
     label: "Sent date",
-    name: "Sent date"
+    name: "Sent date",
   },
   {
     label: "Sent to insurance companies",
     name: "Sent to insurance companies",
-    type: 'datetime'
+    type: "datetime",
   },
   {
     label: "Suggestion premia",
-    name: "Suggestion premia"
+    name: "Suggestion premia",
   },
   {
     label: "Twisting tag",
-    name: "Twisting tag"
+    name: "Twisting tag",
   },
   {
     label: "agent",
-    name: "agent"
+    name: "agent",
   },
   {
     label: "agent number",
-    name: "agent number"
+    name: "agent number",
   },
   {
     label: "insurance company",
-    name: "insurance company"
+    name: "insurance company",
   },
   {
     label: "partner id",
-    name: "partner id"
+    name: "partner id",
   },
   {
     label: "partner name",
-    name: "partner name"
+    name: "partner name",
   },
   {
     label: "program name",
-    name: "program name"
+    name: "program name",
   },
   {
     label: "start of insurance",
     name: "start of insurance",
-    type: 'datetime'
+    type: "datetime",
   },
   {
     label: "submission date",
     name: "submission date",
-    type: 'datetime'
+    type: "datetime",
   },
   {
     label: "submission month",
-    name: "submission month"
-  }
+    name: "submission month",
+  },
 ];
 
+const TicketsModal = (props ) => {
+  const { isAdmin,  language } = props;
 
-export class TicketsModal extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectDateTime: "",
-      showCalendarTime: false,
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const error = useSelector((state) => state.user.error);
+  const response = useSelector((state) => state.user.response);
+  const [selectDateTime, setSelectDateTime] = useState("");
+  const [showCalendarTime, setshowCalendarTime] = useState(false);
+  const [calender, setCalender] = useState({});
+  const [selectDate, setSelectDate] = useState("");
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [formData, setFormData] = useState(props.data);
 
-      calender: {},
+  useEffect(() => {
+    setFormData(props.data);
+  }, [props]);
 
-      selectDate: "",
-      showCalendar: false,
+  // const setStrSearch = (obj) => {
+  //   this.setState(obj);
+  // };
 
-      formData: props.data,
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      formData: nextProps.data
-    })
-  }
-
-
-  setStrSearch = (obj) => {
-    this.setState(obj)
-  }
-
-  handleChange = (event) => {
-    const { target: { name, value } } = event;
-    this.setState({
+  const handleChange = (event) => {
+    const {
+      target: { name, value },
+    } = event;
+    setFormData({
       formData: {
-        ...this.state.formData,
-        [name]: value
-      }
-    })
-  }
-
-  handleDatePicker = (name, calObj) => {
-    this.setState({
-      calender: {
-        ...this.state.calender,
-        [name]: !this.state.calender[name]
+        ...formData,
+        [name]: value,
       },
+    });
+  };
+
+  const handleDatePicker = (name, calObj) => {
+    setCalender({
+      ...calender,
+      [name]: !calender[name],
+    });
+    setFormData({
       formData: {
-        ...this.state.formData,
-        [name]: calObj.selectDateTime
-      }
-    })
-  }
+        ...formData,
+        [name]: calObj.selectDateTime,
+      },
+    });
+  };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.submitForm(this.props.token, this.props.data["Id"], this.state.formData, this.props.rowId);
-  }
+    dispatch(updateTicketForm(props.token, props.data["Id"], formData, props.rowId))
+  };
 
-  render() {
+  const fields = (input) => {
 
-    const { isAdmin, t, i18n: { language } } = this.props;
-    const fields = (input) => {
+    const { type } = input;
+    if (type === undefined) {
+      return (
+        <div className="item" key={input.label}>
+          <label>{t(`tickets.${input.label}`)}</label>
+          <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+          disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
+        </div>
+      )
+    }
+    else if (type === "datetime") {
+      return (
+        <div className="item" key={input.label}>
+          <label>{t("tickets.submission date")}</label>
+          <InputGroup>
+            <InputGroup.Prepend>
+              <InputGroup.Text id="basic-addon1">
+                <FiCalendar size={16} color="#061129" />
+              </InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              disabled={!isAdmin}
+              defaultValue={formData[input.label]}
+              placeholder="dd/mm/yyyy HH:mm"
+              aria-describedby="basic-addon1"
+              name={input.name}
+              onClick={() =>
+                setCalender({
+                  calender: {
+                    ...calender,
+                    [input.name]: !calender[input.name]
+                  }
+                })
+              }
+            />
 
-      const { type } = input;
-      if (type === undefined) {
-        return (
-          <div className="item" key={input.label}>
-            <label>{t(`tickets.${input.label}`)}</label>
-            <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-            disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
-          </div>
-        )
-      }
-      else if (type === "datetime") {
-        return (
-          <div className="item" key={input.label}>
-            <label>{t("tickets.submission date")}</label>
-            <InputGroup>
-              <InputGroup.Prepend>
-                <InputGroup.Text id="basic-addon1">
-                  <FiCalendar size={16} color="#061129" />
-                </InputGroup.Text>
-              </InputGroup.Prepend>
-              <FormControl
-                disabled={!isAdmin}
-                defaultValue={this.state.formData[input.label]}
-                placeholder="dd/mm/yyyy HH:mm"
-                aria-describedby="basic-addon1"
-                name={input.name}
-                onClick={() =>
-                  this.setState({
-                    calender: {
-                      ...this.state.calender,
-                      [input.name]: !this.state.calender[input.name]
-                    }
-                  })
-                }
-              />
-
-              {this.state.calender[input.name] && (
-                <CalendarTime handle={(obj) => this.handleDatePicker(input.name, obj)} param="Select" />
-              )}
-            </InputGroup>
-          </div>
-        )
-      }
-
+            {calender[input.name] && (
+              <CalendarTime handle={(obj) => handleDatePicker(input.name, obj)} param="Select" />
+            )}
+          </InputGroup>
+        </div>
+      )
     }
 
-    const formFields = (field) => field.map((item, index) => fields(item));
-
-
-    return (
-      <div>
-        <Modal
-          show={this.props.showModal}
-          onHide={() => this.props.handle(false)}
-        >
-          <Modal.Header>
-            <FiX
-              color="#061129"
-              size={17}
-              onClick={() => this.props.handle(false)}
-            />
-            <Modal.Title>{t("tickets.Details")}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body id="form">
-            {formFields(inputFields)}
-
-            <div style={{ textAlign: "center", display: "flex" }} id="actions">
-              <span className="btn" id="btn-1" onClick={this.handleSubmit}>
-                Save
-              </span>
-            </div>
-          </Modal.Body>
-        </Modal>
-      </div>
-    )
   }
-}
 
-const mapStateToProps = state => ({
-  error: state.user.error,
-  response: state.user.response,
-});
+  const formFields = (field) => field.map((item, index) => fields(item));
 
-const mapDispatchToProps = dispatch => ({
-  submitForm: (token, id, data, ticketData) => dispatch(updateTicketForm(token, id, data, ticketData)),
-});
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(TicketsModal));
+  return (
+    <div>
+      <Modal show={props.showModal} onHide={() => props.handle(false)}>
+        <Modal.Header>
+          <FiX color="#061129" size={17} onClick={() => props.handle(false)} />
+          <Modal.Title>{t("tickets.Details")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body id="form">
+          {formFields(inputFields)}
 
+          <div style={{ textAlign: "center", display: "flex" }} id="actions">
+            <span className="btn" id="btn-1" onClick={handleSubmit}>
+              Save
+            </span>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
+  );
+};
+export default TicketsModal;
