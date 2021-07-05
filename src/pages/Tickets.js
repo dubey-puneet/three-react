@@ -65,6 +65,7 @@ const Tickets = (props)=>  {
     const [searchDateWord, setSearchDateWord] =  useState([]);
     const [showModal, setShowModal] =  useState(false);
     const [tabledata, setTabledata] =  useState([]);
+
     const [pagenum, setPagenum] =  useState(1);
     const [maxpage, setMaxpage] =  useState(100);
     const [startnum, setStartnum] =  useState(0);
@@ -117,6 +118,9 @@ const Tickets = (props)=>  {
     )
     if (firstTime) {
       data = {};
+    }else {
+      //add parameter here for pagination
+      data={...data}
     }
     axios
       .post(
@@ -139,7 +143,7 @@ const Tickets = (props)=>  {
 
         let maxpage = Math.floor(tempTabledata.length / perpage) + 1
         setMaxpage(maxpage);
-        //setTabledata(tempTabledata);
+        setTabledata(tempTabledata);
       })
       .catch((error) => {
         console.log('error----- ', error);
@@ -168,9 +172,10 @@ const Tickets = (props)=>  {
   },[])
   
 
-  /*useEffect(()=>{
-    //getData()
-  },[startnum])*/
+  useEffect(()=>{
+    if(startnum)
+    getData(false)
+  },[startnum])
 
     return (
       <div>
@@ -276,11 +281,11 @@ const Tickets = (props)=>  {
                 <span>
                   <FiChevronsLeft
                     size={15}
-                    onClick={() => setPagenum(1),setStartnum(0)}
+                    onClick={() => {setPagenum(1);setStartnum(0)}}
                   />
                   <FiChevronLeft
                     size={15}
-                    onClick={() =>setPagenum(1),setStartnum(0)}
+                    onClick={() =>{setPagenum(1);setStartnum(0)}}
                   />
                 </span>
               )}
@@ -297,15 +302,15 @@ const Tickets = (props)=>  {
                   <FiChevronRight
                     size={15}
                     onClick={() =>
-                      setPagenum(pagenum + 1),
-                      setStartnum(pagenum)
+                      {setPagenum(pagenum + 1);
+                      setStartnum(pagenum)}
                     }
                   />
                   <FiChevronsRight
                     size={15}
                     onClick={() =>
-                      setPagenum(maxpage),
-                      setStartnum(maxpage - 1)
+                      {setPagenum(maxpage);
+                      setStartnum(maxpage - 1)}
                     }
                   />
                 </span>
