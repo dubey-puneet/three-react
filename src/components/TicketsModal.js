@@ -212,7 +212,8 @@ export class TicketsModal extends Component {
         return (
           <div className="item" key={input.label}>
             <label>{t(`tickets.${input.label}`)}</label>
-            <input type="text" disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
+            <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+            disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={this.state.formData[input.label]} />
           </div>
         )
       }
