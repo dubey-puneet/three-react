@@ -17,8 +17,8 @@
     "sentence": "Ultricies purus dictum velit luctus volutpat faucibus rhoncus diam. Semper vulputate purus varius aliquam dictum velit luctus emper vulputat odio."
   },
   "tickets": {            
-    "submission date":"submission date",
-    "submission month":"submission month",
+    "submission date":"תאריך קבלה",
+    "submission month":"חודש הגשה",
     "Full name": "שם מבוטח ראשי (משפחה+פרטי)",
     "Id number": "ת.ז : 9 ספרות",
     "partner name": "שם מבוטח משני",
