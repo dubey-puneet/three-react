@@ -1,22 +1,15 @@
 import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from "react-redux"
 import { setCurrentLang } from "../utils/redux/user/user.action"
-
 import "../assets/styles/_footer.scss"
 
 const Footer = () => {
   const { i18n } = useTranslation()
   const dispatch = useDispatch()
-  let chk = false
   const chek = useSelector((state) => state.user.currentLang)
-
-  if (chek === "hebrew") {
-    chk = false
-  } else {
-    chk = true
-  }
-
-  function changeLanguage(e) {
+  const chk =(chek === "hebrew")? false : true;
+    
+  const  changeLanguage =(e)=> {
     let flag = e.target.checked
     if (flag) {
       i18n.changeLanguage("en")

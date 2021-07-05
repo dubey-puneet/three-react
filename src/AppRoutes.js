@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react"
 import { Switch, Route, Redirect } from "react-router-dom"
-import Spinner from "./components/Spinner"
+import Spinner from "components/Spinner"
 
 const Login = lazy(() => import("./pages/Login"))
 const Uploadfile = lazy(() => import("./pages/Uploadfile"))

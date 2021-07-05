@@ -1,77 +1,53 @@
-import React from "react"
-
+import React, {useState }from "react"
 import { connect } from "react-redux"
-import { InputGroup, FormControl, Alert, Button } from "react-bootstrap"
+import { InputGroup, FormControl, Button } from "react-bootstrap"
 import { withTranslation } from "react-i18next"
-
 import axios from "axios"
-import { setCurrentUser } from "../utils/redux/user/user.action"
-
+import { setCurrentUser } from "utils/redux/user/user.action"
+import ErrorMessage from 'components/ErrorMessage';
 import "../assets/styles/_login.scss"
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      username: "",
-      password: "",
-      showUsernameWarn: false,
-      showPasswordWarn: false,
-      showMismatch: false
-    }
-  }
+const Login = (props)=> {
+  const { t, setCurrentUser, history } = props;
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showUsernameWarn, setShowUsernameWarn] = useState(false);
+  const [showPasswordWarn , setShowPasswordWarn] = useState(false);
+  const [showMismatch, setShowMismatch] = useState(false);
 
-  submit = () => {
-    if (this.state.username === "") {
-      this.setState({ showUsernameWarn: true })
-    } else {
-      this.setState({ showUsernameWarn: false })
-    }
-    if (this.state.password === "") {
-      this.setState({ showPasswordWarn: true })
-    } else {
-      this.setState({ showPasswordWarn: false })
-    }
-    if (this.state.username !== "" && this.state.password !== "") {
+  const submit = () => {
+    setShowUsernameWarn((username === "")? true : false)
+    setShowPasswordWarn((password === "") ? true: false)
+
+    if (username !== "" && password !== "") {
       axios
         .post(" http://eshkolserver.azurewebsites.net/api/Login/login", {
-          UserName: this.state.username,
-          Password: this.state.password
+          UserName: username,
+          Password: password
         })
         .then((res) => {
           if (res.data) {
-            this.props.setCurrentUser({
+            setCurrentUser({
               username: res.data.fullName,
               email: res.data.email,
               isAdmin: res.data.isAdmin,
               avatar: "taylor.png",
               token: res.data.token
             })
-            document.location = "/tickets"
+            history.push('/tickets')
           }
         })
         .catch((error) => {
-          console.log(error.response.data)
-          this.setState({ showMismatch: true })
+         setShowMismatch(true)
         })
     }
   }
 
-  render() {
-    const { t } = this.props
     return (
       <div className="content">
         <div className="col-md-4">
-          {this.state.showMismatch && (
-            <Alert variant="danger" className="warning">
-              {t("login.username or password is not match")}
-            </Alert>
-          )}
-          {this.state.showUsernameWarn && (
-            <Alert variant="danger" className="warning">
-              {t("login.please insert username")}
-            </Alert>
-          )}
+          {showMismatch && ( <ErrorMessage title="login.username or password is not match" />)}
+          {showUsernameWarn && (<ErrorMessage title="login.please insert username" />)}
 
           <InputGroup>
             <InputGroup.Prepend>
@@ -79,16 +55,12 @@ class Login extends React.Component {
             </InputGroup.Prepend>
             <FormControl
               id="username"
-              onChange={(e) => this.setState({ username: e.target.value })}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </InputGroup>
         </div>
         <div className="col-md-4">
-          {this.state.showPasswordWarn && (
-            <Alert variant="danger" className="warning">
-              {t("login.please insert password")}
-            </Alert>
-          )}
+          {showPasswordWarn && ( <ErrorMessage title="login.please insert password" />)}
 
           <InputGroup>
             <InputGroup.Prepend>
@@ -97,16 +69,15 @@ class Login extends React.Component {
             <FormControl
               id="password"
               type="password"
-              onChange={(e) => this.setState({ password: e.target.value })}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </InputGroup>
         </div>
-        <Button variant="warning" className="subtn" onClick={this.submit}>
+        <Button variant="warning" className="subtn" onClick={submit}>
           {t("login.login")}
         </Button>
       </div>
     )
-  }
 }
 
 const mapStateToProps = ({ user }) => ({

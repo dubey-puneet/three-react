@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Error404() {
+const Error404 =()=>{
   return (
     <div>
       <div className="d-flex align-items-center text-center error-page FourZeroFour pt-5 pb-4">

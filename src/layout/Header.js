@@ -1,29 +1,25 @@
 import React from "react"
-
 import { connect } from "react-redux"
-import { setCurrentUser } from "../utils/redux/user/user.action"
+import { setCurrentUser } from "utils/redux/user/user.action"
 import { withTranslation } from "react-i18next"
-
 import "../assets/styles/_header.scss"
 
-class Header extends React.Component {
-  logout = () => {
-    this.props.setCurrentUser(null)
+const  Header =(props)=> {
+     const { t, setCurrentUser, currentUser } = props
+     const pathname = window.location.pathname
+
+  const logout = () => {
+   setCurrentUser(null)
   }
-
-  render() {
-    const { t } = this.props
-    const pathname = window.location.pathname
-
     return (
       <div>
-        {this.props.currentUser !== null && (
+        {currentUser !== null && (
           <div className="header">
             <div className="logo">
               <img src="logo.png" alt="logo" />
             </div>
             <ul className="menu">
-              {this.props.currentUser.isAdmin && (
+              {currentUser.isAdmin && (
                 <li className={`${pathname === "/uploadfile" ? "active" : ""}`}>
                   <a href="/uploadfile">{t("header.upload file")}</a>
                 </li>
@@ -41,16 +37,16 @@ class Header extends React.Component {
 
             <div className="user">
               <div>
-                <h3>{this.props.currentUser.username}</h3>
-                <h4>{this.props.currentUser.email}</h4>
+                <h3>{currentUser.username}</h3>
+                <h4>{currentUser.email}</h4>
               </div>
               <div>
                 <img
-                  src={"img/avatar/" + this.props.currentUser.avatar}
+                  src={"img/avatar/" + currentUser.avatar}
                   alt="avatar"
                   width="32"
                   height="32"
-                  onClick={this.logout}
+                  onClick={logout}
                 />
               </div>
             </div>
@@ -58,7 +54,6 @@ class Header extends React.Component {
         )}
       </div>
     )
-  }
 }
 
 const mapStateToProps = ({ user }) => ({
