@@ -1,5 +1,4 @@
-import React from "react"
-
+import React, { useEffect, useState } from "react"
 import "react-calendar/dist/Calendar.css"
 import {
   FiCalendar,
@@ -9,21 +8,18 @@ import {
   FiChevronsRight,
   FiChevronRight
 } from "react-icons/fi"
-
 import { connect } from "react-redux"
 import "../assets/styles/_tickets.scss"
-
 import { withTranslation } from "react-i18next"
 import axios from "axios"
-
 import SearchStr from "../components/Search"
 import CalendarDate from "../components/CalendarDate1"
 import TicketsModal from "../components/TicketsModal"
-
 import Header from "../layout/Header"
 import { filterBody } from "../data/filterBody"
 import { setTableData } from "../utils/redux/table/table.action"
 
+//--------------------------------------------------------------
 const dateFieldArr = [
   "start of insurance",
   "Date of insurance",
@@ -59,67 +55,65 @@ const stringFieldArr = [
   // "Phone meeting",
   // "Fast start"
 ]
-class Tickets extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSearch: [],
-      searchWord: [],
-      showDateSearch: [],
-      searchDateWord: [],
 
-      showModal: false,
+//--------------------------------------------------------------
+const Tickets = (props)=>  {
+    const { t, currentUser, currentUser:{token, isAdmin}, storeData, currentLang} = props;
+    const [showSearch, setShowSearch] =  useState([]);
+    const [searchWord, setSearchWord] =  useState([]);
+    const [showDateSearch, setShowDateSearch] =  useState([]);
+    const [searchDateWord, setSearchDateWord] =  useState([]);
+    const [showModal, setShowModal] =  useState(false);
+    const [tabledata, setTabledata] =  useState([]);
+    const [pagenum, setPagenum] =  useState(1);
+    const [maxpage, setMaxpage] =  useState(100);
+    const [startnum, setStartnum] =  useState(0);
+    const [perpage, setPerpage] =  useState(20);
+    const [ticketData, setTicketData] =  useState({});
+    const [ticketRowNumber, setTicketRowNumber] =  useState('');
 
-      tabledata: [],
-      pagenum: 1,
-      maxpage: 100,
-      startnum: 0,
-      perpage: 20,
-      ticketData: {},
-      ticketRowNumber: '',
-    }
+
+  const setStrSearch = (obj) => {
+    //this.setState(obj)
   }
 
-  setStrSearch = (obj) => {
-    this.setState(obj)
+  const setStrSearch1 = (obj) => {
+    //this.setState(obj, function () {
+      //getData()
+    //})
   }
 
-  setStrSearch1 = (obj) => {
-    this.setState(obj, function () {
-      this.getData()
-    })
+  const handleModal = (ticket, ticketRowNumber, param) => {
+    setShowModal(param);
+    setTicketData(ticket);
+    setTicketRowNumber(ticketRowNumber)
   }
 
-  handleModal = (ticket, ticketRowNumber, param) => {
-    this.setState({ showModal: param, ticketData: ticket, ticketRowNumber })
-  }
-
-  setPageNum = (event) => {
-    let val = this.state.pagenum
+  const setPageNum = (event) => {
     if (event.key === "Enter") {
-      if (!isNaN(val) && val > 0 && val !== "") {
-        this.setState({ startnum: this.state.pagenum - 1 })
+      if (!isNaN(pagenum) && pagenum > 0 && pagenum !== "") {
+        setStartnum( pagenum - 1)
       } else {
-        this.setState({ pagenum: 1, startnum: 0 })
+        setPagenum(1)
+        setStartnum(0)
       }
     }
   }
 
-  getData = (firstTime = false) => {
-    let start = this.state.startnum * this.state.perpage
-    let tabledata = []
+  const getData = (firstTime = false) => {
+    let start = startnum * perpage
+    let tempTabledata = []
 
     let headers = {
       "content-type": "application/json",
-      Authorization: "Bearer " + this.props.currentUser.token
+      Authorization: "Bearer " + token
     }
 
-    let vm = this
     let data = filterBody(
       stringFieldArr,
       dateFieldArr,
-      this.state.searchWord,
-      this.state.searchDateWord
+      searchWord,
+      searchDateWord
     )
     if (firstTime) {
       data = {};
@@ -135,53 +129,48 @@ class Tickets extends React.Component {
       .then((res) => {
         let response = res.data;
         // Update the tabledata in the store
-        this.props.storeData(res.data)
+        storeData(res.data)
 
-        for (let i = start; i < start + vm.state.perpage; i++) {
+        for (let i = start; i < start + perpage; i++) {
           if (response[i] !== undefined) {
-            tabledata.push(response[i])
+            tempTabledata.push(response[i])
           }
         }
 
-        let maxpage = Math.floor(tabledata.length / vm.state.perpage) + 1
-        vm.setState({ tabledata: tabledata, maxpage: maxpage })
+        let maxpage = Math.floor(tempTabledata.length / perpage) + 1
+        setMaxpage(maxpage);
+        //setTabledata(tempTabledata);
       })
       .catch((error) => {
-        console.log(error.response.data)
+        console.log('error----- ', error);
+        //console.log(error.response.data)
       })
   }
 
-  componentDidMount() {
-    let showSearch = [],
-      searchWord = [],
-      showDateSearch = [],
-      searchDateWord = []
-
+  useEffect(()=>{
+  let showSearch = [], searchWord = [], showDateSearch = [],searchDateWord = [];
     stringFieldArr.forEach(function (value, key) {
       showSearch.push(false)
       searchWord.push(null)
     })
+
     dateFieldArr.forEach(function (value, key) {
       showDateSearch.push(false)
       searchDateWord.push(null)
     })
-    this.setState({
-      showSearch: showSearch,
-      searchWord: searchWord,
-      showDateSearch: showDateSearch,
-      searchDateWord: searchDateWord
-    })
-    this.getData(true);
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.startnum !== prevState.startnum) {
-      this.getData()
-    }
-  }
+    setShowSearch(showSearch);
+    setSearchWord(searchWord);
+    setShowDateSearch(showDateSearch);
+    setSearchDateWord(searchDateWord);
+    getData(true);
 
-  render() {
-    const { t } = this.props
+  },[])
+  
+
+  /*useEffect(()=>{
+    //getData()
+  },[startnum])*/
 
     return (
       <div>
@@ -189,44 +178,38 @@ class Tickets extends React.Component {
 
         <div className="tickets">
           <table
-            className={`table-responsive ${this.props.currentLang === "hebrew" ? "text-right" : "text-center"
-              }`}
-          >
+            className={`table-responsive ${currentLang === "hebrew" ? "text-right" : "text-center"}`} >
             <thead>
               <tr>
-                {stringFieldArr.map((value, i) => (
+                {stringFieldArr && stringFieldArr.length>0 && stringFieldArr.map((value, i) => (
                   <td
                     key={i}
-                    className={`${this.state.showSearch[i] ? "active" : ""}`}
+                    className={`${showSearch[i] ? "active" : ""}`}
                   >
                     <SearchStr
-                      currentUser={this.props.currentUser}
-                      searchWord={this.state.searchWord}
-                      showSearch={this.state.showSearch}
+                      currentUser={currentUser}
+                      searchWord={searchWord}
+                      showSearch={showSearch}
                       index={i}
-                      handle={this.setStrSearch}
-                      handle1={this.setStrSearch1}
+                      handle={setStrSearch}
+                      handle1={setStrSearch1}
                       text={t("tickets." + value)}
                       param={value}
                     />
                   </td>
                 ))}
-                {dateFieldArr.map((value, i) => (
+                {dateFieldArr && dateFieldArr.length>0 && dateFieldArr.map((value, i) => (
                   <td
                     key={i}
                     width="170"
-                    className={`${this.state.showDateSearch[i] ? "active" : ""
-                      }`}
-                  >
-                    {this.state.searchDateWord[i] === null && (
+                    className={`${showDateSearch[i] ? "active" : ""}`}>
+                    {searchDateWord[i] === null && (
                       <div
                         className="showCalendar"
                         onClick={() => {
-                          let showDateSearch = this.state.showDateSearch
-                          showDateSearch[i] = !showDateSearch[i]
-                          this.setState({
-                            showDateSearch: showDateSearch
-                          })
+                          let showDateSearch = showDateSearch;
+                          showDateSearch[i] = !showDateSearch[i];
+                          setShowDateSearch(showDateSearch);
                         }}
                       >
                         <FiCalendar color="#bbb" size={17} />
@@ -234,33 +217,31 @@ class Tickets extends React.Component {
                       </div>
                     )}
 
-                    {this.state.searchDateWord[i] !== null && (
+                    {searchDateWord[i] !== null && (
                       <div className="showSearch">
                         <FiX
                           color="#bbb"
                           size={17}
                           onClick={() => {
-                            let searchDateWord = this.state.searchDateWord,
-                              showDateSearch = this.state.showDateSearch
-                            searchDateWord[i] = null
-                            showDateSearch[i] = false
-                            this.setState({
-                              searchDateWord: searchDateWord,
-                              showDateSearch: showDateSearch
-                            })
+                            let searchDateWord = searchDateWord;
+                              showDateSearch = showDateSearch;
+                            searchDateWord[i] = null;
+                            showDateSearch[i] = false;
+                            setSearchDateWord(searchDateWord);
+                            setShowDateSearch(showDateSearch);
                           }}
                         />
-                        {this.state.searchDateWord[i]}
+                        {searchDateWord[i]}
                       </div>
                     )}
 
-                    {this.state.showDateSearch[i] && (
+                    {showDateSearch[i] && (
                       <CalendarDate
-                        handle={this.setStrSearch1}
+                        handle={setStrSearch1}
                         param="Search"
                         index={i}
-                        searchDateWord={this.state.searchDateWord}
-                        showDateSearch={this.state.showDateSearch}
+                        searchDateWord={searchDateWord}
+                        showDateSearch={showDateSearch}
                       />
                     )}
                   </td>
@@ -268,9 +249,9 @@ class Tickets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.tableData.length > 0 &&
-                this.props.tableData.map((value, index) => (
-                  <tr key={index} onClick={() => this.handleModal(value, index, true)}>
+              {props.tableData && props.tableData.length > 0 &&
+                props.tableData.map((value, index) => (
+                  <tr key={index} onClick={() => handleModal(value, index, true)}>
                     {stringFieldArr.map((val, i) => (
                       <td key={i}>{value[val]}</td>
                     ))}
@@ -282,29 +263,24 @@ class Tickets extends React.Component {
             </tbody>
           </table>
           <TicketsModal
-            showModal={this.state.showModal}
-            data={this.state.ticketData}
-            handle={this.handleModal}
-            rowId={this.state.ticketRowNumber}
-            token={this.props.currentUser.token}
-            isAdmin={this.props.currentUser.isAdmin}
+            showModal={showModal}
+            data={ticketData}
+            handle={handleModal}
+            rowId={ticketRowNumber}
+            token={token}
+            isAdmin={isAdmin}
           />
-          {this.state.tabledata.length > 0 && (
+          {tabledata && tabledata.length > 0 && (
             <div className="pagination">
-              {this.state.pagenum > 1 && (
+              {pagenum > 1 && (
                 <span>
                   <FiChevronsLeft
                     size={15}
-                    onClick={() => this.setState({ pagenum: 1, startnum: 0 })}
+                    onClick={() => setPagenum(1),setStartnum(0)}
                   />
                   <FiChevronLeft
                     size={15}
-                    onClick={() =>
-                      this.setState({
-                        pagenum: this.state.pagenum - 1,
-                        startnum: this.state.pagenum - 2
-                      })
-                    }
+                    onClick={() =>setPagenum(1),setStartnum(0)}
                   />
                 </span>
               )}
@@ -312,28 +288,24 @@ class Tickets extends React.Component {
               <input
                 type="text"
                 className="pageNum form-control"
-                value={this.state.pagenum}
-                onChange={(e) => this.setState({ pagenum: e.target.value })}
-                onKeyDown={(e) => this.setPageNum(e)}
+                value={pagenum}
+                onChange={(e) => setPagenum(e.target.value)}
+                onKeyDown={(e) => setPageNum(e)}
               />
-              {this.state.pagenum < this.state.maxpage && (
+              {pagenum < maxpage && (
                 <span>
                   <FiChevronRight
                     size={15}
                     onClick={() =>
-                      this.setState({
-                        pagenum: this.state.pagenum + 1,
-                        startnum: this.state.pagenum
-                      })
+                      setPagenum(pagenum + 1),
+                      setStartnum(pagenum)
                     }
                   />
                   <FiChevronsRight
                     size={15}
                     onClick={() =>
-                      this.setState({
-                        pagenum: this.state.maxpage,
-                        startnum: this.state.maxpage - 1
-                      })
+                      setPagenum(maxpage),
+                      setStartnum(maxpage - 1)
                     }
                   />
                 </span>
@@ -344,7 +316,6 @@ class Tickets extends React.Component {
       </div>
     )
   }
-}
 
 const mapStateToProps = ({ user, table }) => ({
   currentUser: user.currentUser,
