@@ -206,8 +206,7 @@ const TicketsModal = (props ) => {
       return (
         <div className="item" key={input.label}>
           <label>{t(`tickets.${input.label}`)}</label>
-          <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
-          disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
+          <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)} onChange={handleChange} disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
         </div>
       )
     }
