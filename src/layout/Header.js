@@ -2,15 +2,15 @@ import React from "react"
 import { connect } from "react-redux"
 import { setCurrentUser } from "utils/redux/user/user.action"
 import { withTranslation } from "react-i18next"
+import { Link } from "react-router-dom";
 import "../assets/styles/_header.scss"
 
 const  Header =(props)=> {
-     const { t, setCurrentUser, currentUser } = props
-     const pathname = window.location.pathname
+  const { t, setCurrentUser, currentUser } = props
+  const pathname = window.location.pathname
 
-  const logout = () => {
-   setCurrentUser(null)
-  }
+  const logout = () => setCurrentUser(null);
+
     return (
       <div>
         {currentUser !== null && (
@@ -21,11 +21,11 @@ const  Header =(props)=> {
             <ul className="menu">
               {currentUser.isAdmin && (
                 <li className={`${pathname === "/uploadfile" ? "active" : ""}`}>
-                  <a href="/uploadfile">{t("header.upload file")}</a>
+                  <Link to="/uploadfile">{t("header.upload file")}</Link>
                 </li>
               )}
               <li className={`${pathname === "/tickets" ? "active" : ""}`}>
-                <a href="/tickets">{t("header.opened tickets")}</a>
+                <Link to="/tickets">{t("header.opened tickets")}</Link>
               </li>
               <li>{t("header.delay in payments")}</li>
               <li>{t("header.sales pie")}</li>

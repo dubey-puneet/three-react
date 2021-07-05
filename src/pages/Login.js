@@ -48,7 +48,6 @@ const Login = (props)=> {
         <div className="col-md-4">
           {showMismatch && ( <ErrorMessage title="login.username or password is not match" />)}
           {showUsernameWarn && (<ErrorMessage title="login.please insert username" />)}
-
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text>{t("username")}</InputGroup.Text>
@@ -61,7 +60,6 @@ const Login = (props)=> {
         </div>
         <div className="col-md-4">
           {showPasswordWarn && ( <ErrorMessage title="login.please insert password" />)}
-
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text>{t("password")}</InputGroup.Text>

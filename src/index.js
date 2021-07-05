@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter } from "react-router-dom"
-import history from "./history"
+import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
 import { store, persistor } from "./utils/redux/store"
 import { PersistGate } from "redux-persist/integration/react"
@@ -11,11 +10,11 @@ import "./config/lang"
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter basename="/" history={history}>
+    <Router basename="/">
       <PersistGate persistor={persistor}>
         <App />
       </PersistGate>
-    </BrowserRouter>
+    </Router>
   </Provider>,
   document.getElementById("root")
 )
