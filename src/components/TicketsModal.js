@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from "i18next"
 import "../assets/styles/_tickets.scss";
 import "../assets/styles/_ticketsmodal.scss";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const inputFields = [
   {
@@ -146,36 +146,22 @@ const inputFields = [
 ];
 
 const TicketsModal = (props ) => {
-  const { isAdmin,  language } = props;
+  const { isAdmin } = props;
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const error = useSelector((state) => state.user.error);
-  const response = useSelector((state) => state.user.response);
-  const [selectDateTime, setSelectDateTime] = useState("");
-  const [showCalendarTime, setshowCalendarTime] = useState(false);
   const [calender, setCalender] = useState({});
-  const [selectDate, setSelectDate] = useState("");
-  const [showCalendar, setShowCalendar] = useState(false);
   const [formData, setFormData] = useState(props.data);
 
   useEffect(() => {
     setFormData(props.data);
   }, [props]);
 
-  // const setStrSearch = (obj) => {
-  //   this.setState(obj);
-  // };
-
   const handleChange = (event) => {
-    const {
-      target: { name, value },
-    } = event;
+    const { target: { name, value }} = event;
     setFormData({
-      formData: {
-        ...formData,
-        [name]: value,
-      },
+      ...formData,
+      [name]: value,
     });
   };
 
@@ -185,10 +171,8 @@ const TicketsModal = (props ) => {
       [name]: !calender[name],
     });
     setFormData({
-      formData: {
-        ...formData,
-        [name]: calObj.selectDateTime,
-      },
+      ...formData,
+      [name]: calObj.selectDateTime,
     });
   };
 
@@ -196,7 +180,7 @@ const TicketsModal = (props ) => {
     e.preventDefault();
     dispatch(updateTicketForm(props.token, props.data["Id"], formData, props.rowId))
   };
-
+  
   const fields = (input) => {
     const { type } = input;
     const {language}=i18n
@@ -204,14 +188,14 @@ const TicketsModal = (props ) => {
       return (
         <div className="item" key={input.label}>
           <label>{t(`tickets.${input.label}`)}</label>
-          <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)} onChange={handleChange} disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
+          <input type="text" name={input.name} onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)} onChange={handleChange} disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
         </div>
       )
     }
     else if (type === "datetime") {
       return (
         <div className="item" key={input.label}>
-          <label>{t("tickets.submission date")}</label>
+          <label>{t(`tickets.${input.label}`)}</label>
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="basic-addon1">
@@ -220,16 +204,15 @@ const TicketsModal = (props ) => {
             </InputGroup.Prepend>
             <FormControl
               disabled={!isAdmin}
-              defaultValue={formData[input.label]}
+              value={formData[input.name]}
               placeholder="dd/mm/yyyy HH:mm"
               aria-describedby="basic-addon1"
               name={input.name}
+              readOnly={true}
               onClick={() =>
                 setCalender({
-                  calender: {
                     ...calender,
                     [input.name]: !calender[input.name]
-                  }
                 })
               }
             />

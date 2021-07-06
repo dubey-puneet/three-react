@@ -16,7 +16,7 @@ import SearchStr from "components/Search"
 import CalendarDate from "components/CalendarDate1"
 import TicketsModal from "components/TicketsModal"
 import Header from "layout/Header"
-import { filterBody } from "../data/filterBody"
+import { filterBody } from "data/filterBody"
 import { setTableData } from "utils/redux/table/table.action"
 import _ from 'lodash';
 
@@ -241,14 +241,15 @@ const Tickets = (props)=>  {
                 ))}
             </tbody>
           </table>
-          <TicketsModal
-            showModal={showModal}
-            data={ticketData}
-            handle={handleModal}
-            rowId={ticketRowNumber}
-            token={token}
-            isAdmin={isAdmin}
-          />
+            {showModal && (<TicketsModal
+              showModal={showModal}
+              data={ticketData}
+              handle={handleModal}
+              rowId={ticketRowNumber}
+              token={token}
+              isAdmin={isAdmin}
+            />
+          )}
           {tabledata && tabledata.length > 0 && (
             <div className="pagination">
               {pagenum > 1 && (
