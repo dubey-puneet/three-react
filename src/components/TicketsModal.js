@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Modal, InputGroup, FormControl } from "react-bootstrap";
 import { FiX, FiCalendar } from "react-icons/fi";
-
-import CalendarTime from "../components/CalendarTime";
-import { connect } from "react-redux";
-import { updateTicketForm } from "./../utils/redux/user/user.action";
-import { useTranslation } from 'react-i18next';
 import i18n from "i18next"
-import "../assets/styles/_tickets.scss";
-import "../assets/styles/_ticketsmodal.scss";
-import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from 'react-i18next';
+
+import CalendarTime from "components/CalendarTime";
+import { updateTicketForm } from "utils/redux/user/user.action";
+import "assets/styles/_tickets.scss";
+import "assets/styles/_ticketsmodal.scss";
 
 const inputFields = [
   {
@@ -147,7 +146,8 @@ const inputFields = [
   },
 ];
 
-const TicketsModal = (props ) => {
+const TicketsModal = ( props ) => {
+
   const { isAdmin,  language } = props;
 
   const dispatch = useDispatch();
@@ -213,7 +213,7 @@ const TicketsModal = (props ) => {
     else if (type === "datetime") {
       return (
         <div className="item" key={input.label}>
-          <label>{t("tickets.submission date")}</label>
+          <label>{t(`tickets.${input.label}`)}</label>
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="basic-addon1">
@@ -228,10 +228,8 @@ const TicketsModal = (props ) => {
               name={input.name}
               onClick={() =>
                 setCalender({
-                  calender: {
                     ...calender,
                     [input.name]: !calender[input.name]
-                  }
                 })
               }
             />
