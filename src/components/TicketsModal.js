@@ -1,4 +1,4 @@
-import React, { useState, Component, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, InputGroup, FormControl } from "react-bootstrap";
 import { FiX, FiCalendar } from "react-icons/fi";
 
@@ -6,7 +6,7 @@ import CalendarTime from "../components/CalendarTime";
 import { connect } from "react-redux";
 import { updateTicketForm } from "./../utils/redux/user/user.action";
 import { useTranslation } from 'react-i18next';
-
+import i18n from "i18next"
 import "../assets/styles/_tickets.scss";
 import "../assets/styles/_ticketsmodal.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -200,8 +200,8 @@ const TicketsModal = (props ) => {
   };
 
   const fields = (input) => {
-
     const { type } = input;
+    const {language}=i18n
     if (type === undefined) {
       return (
         <div className="item" key={input.label}>
