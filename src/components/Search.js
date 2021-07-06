@@ -1,143 +1,125 @@
-import React, { Component } from "react"
-
+import React, { useState } from "react"
 import axios from "axios"
-
 import { FiSearch, FiX } from "react-icons/fi"
 import "../assets/styles/_tickets.scss"
 
-export class Search extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSearch: false,
-      showList: false,
-      listArr: []
-    }
-  }
-  setShow = () => {
-    this.setState({
-      showSearch: true,
-      showList: false
-    })
+const Search =(props)=> {
+    const {index, handle, handle1, currentUser:{token}, param} = props;
+    const [showSearch, setShowSearch] = useState(false);
+    const [showList, setShowList] = useState(false);
+    const [listArr, setListArr] = useState([]);
 
-    let shSearch = this.props.showSearch
-    shSearch[this.props.index] = true
-
-    this.props.handle({ showSearch: shSearch })
+  const setShow = () => {
+    setShowSearch(true);
+    setShowList(false);
+    let shSearch = props.showSearch
+    shSearch[index] = true
+    handle({ showSearch: shSearch })
   }
-  setSearch = (event) => {
+  const setSearch = (event) => {
     if (event.key === "Enter") {
-      this.setState({ showSearch: false })
+      setShowSearch(false)
 
-      let shSearch = this.props.showSearch,
-        searchWord = this.props.searchWord
+      let shSearch = props.showSearch,
+        searchWord = props.searchWord
 
-      shSearch[this.props.index] = false
-      searchWord[this.props.index] = event.target.value
-      this.props.handle1({ showSearch: shSearch, searchWord: searchWord })
+      shSearch[index] = false
+      searchWord[index] = event.target.value
+      handle1({ showSearch: shSearch, searchWord: searchWord })
     } else {
       if (event.target.value !== "") {
         let headers = {
           "content-type": "application/json",
-          Authorization: "Bearer " + this.props.currentUser.token
+          Authorization: "Bearer " + token
         }
         axios
           .get(
-            "http://eshkolserver.azurewebsites.net/api/Dynamic/getFilters/requests/" +
-              this.props.param,
+            "http://eshkolserver.azurewebsites.net/api/Dynamic/getFilters/requests/" + param,
             { headers: headers }
           )
           .then((res) => {
-            let listArr = []
+            let listArrTemp = []
             Object.keys(res.data.filters).forEach(function (key, index) {
-              listArr.push(key)
+              listArrTemp.push(key)
             })
-            this.setState({ showList: true, listArr: listArr })
+            setShowList(true);
+            setListArr(listArrTemp);
           })
           .catch((error) => {
             console.log(error.response.data)
           })
       } else {
-        this.setState({ showList: false })
+       setShowList(false);
       }
     }
   }
-  setListSearch = (val) => {
-    this.setState({ showSearch: false })
-
-    let shSearch = this.props.showSearch,
-      searchWord = this.props.searchWord
-
-    shSearch[this.props.index] = false
-    searchWord[this.props.index] = val
-    this.props.handle1({ showSearch: shSearch, searchWord: searchWord })
-  }
-  removeSearch = () => {
-    this.setState({
-      showSearch: false,
-      showList: false
-    })
-    let shSearch = this.props.showSearch,
-      searchWord = this.props.searchWord
-
-    shSearch[this.props.index] = false
-    searchWord[this.props.index] = null
-    this.props.handle({ showSearch: shSearch, searchWord: searchWord })
+  const setListSearch = (val) => {
+    setShowSearch(false);
+    let shSearch = props.showSearch,
+    searchWord = props.searchWord
+    shSearch[index] = false
+    searchWord[index] = val
+    handle1({ showSearch: shSearch, searchWord: searchWord })
   }
 
-  removeSearch1 = () => {
-    this.setState({
-      showSearch: false,
-      showList: false
-    })
-    let shSearch = this.props.showSearch,
-      searchWord = this.props.searchWord
-
-    shSearch[this.props.index] = false
-    searchWord[this.props.index] = null
-    this.props.handle1({ showSearch: shSearch, searchWord: searchWord })
+  const removeSearch = () => {
+    setShowSearch(false);
+    setShowList(false);
+    let shSearch = props.showSearch,
+    searchWord = props.searchWord
+    shSearch[index] = false
+    searchWord[index] = null
+    handle({ showSearch: shSearch, searchWord: searchWord })
   }
 
-  render() {
+  const removeSearch1 = () => {
+    setShowSearch(false);
+    setShowList(false);
+    let shSearch = props.showSearch,
+    searchWord = props.searchWord
+    shSearch[index] = false
+    searchWord[index] = null
+    handle1({ showSearch: shSearch, searchWord: searchWord })
+  }
+
     return (
       <div>
-        {this.props.searchWord[this.props.index] === null && (
+        {props.searchWord[index] === null && (
           <div>
-            {this.state.showSearch && (
+            {showSearch && (
               <div className="searchDiv">
                 <div style={{ width: "80px", margin: "auto" }}>
-                  {this.props.text}
+                  {props.text}
                 </div>
-                <FiX color="#bbb" size={17} onClick={this.removeSearch} />
-                <input type="text" onKeyUp={(e) => this.setSearch(e)} />
+                <FiX color="#bbb" size={17} onClick={removeSearch} />
+                <input type="text" onKeyUp={(e) => setSearch(e)} />
               </div>
             )}
-            {this.state.showList && (
+            {showList && (
               <ul className="searchlist">
-                {this.state.listArr.map((value, index) => (
-                  <li key={index} onClick={() => this.setListSearch(value)}>
+                {listArr.map((value, indexId) => (
+                  <li key={indexId} onClick={() => setListSearch(value)}>
                     {value}
                   </li>
                 ))}
               </ul>
             )}
-            {!this.state.showSearch && (
-              <div className="showCalendar" onClick={this.setShow}>
+            {!showSearch && (
+              <div className="showCalendar" onClick={setShow}>
                 <FiSearch color="#bbb" size={17} />
-                {this.props.text}
+                {props.text}
               </div>
             )}
           </div>
         )}
-        {this.props.searchWord[this.props.index] !== null && (
+        {props.searchWord[index] !== null && (
           <div className="showSearch">
-            <FiX color="#bbb" size={17} onClick={this.removeSearch1} />
-            {this.props.searchWord[this.props.index]}
+            <FiX color="#bbb" size={17} onClick={removeSearch1} />
+            {props.searchWord[index]}
           </div>
         )}
       </div>
     )
-  }
 }
 
 export default Search

@@ -12,12 +12,13 @@ import { connect } from "react-redux"
 import "../assets/styles/_tickets.scss"
 import { withTranslation } from "react-i18next"
 import axios from "axios"
-import SearchStr from "../components/Search"
-import CalendarDate from "../components/CalendarDate1"
-import TicketsModal from "../components/TicketsModal"
-import Header from "../layout/Header"
+import SearchStr from "components/Search"
+import CalendarDate from "components/CalendarDate1"
+import TicketsModal from "components/TicketsModal"
+import Header from "layout/Header"
 import { filterBody } from "../data/filterBody"
-import { setTableData } from "../utils/redux/table/table.action"
+import { setTableData } from "utils/redux/table/table.action"
+import _ from 'lodash';
 
 //--------------------------------------------------------------
 const dateFieldArr = [
@@ -59,29 +60,40 @@ const stringFieldArr = [
 //--------------------------------------------------------------
 const Tickets = (props)=>  {
     const { t, currentUser, currentUser:{token, isAdmin}, storeData, currentLang} = props;
-    const [showSearch, setShowSearch] =  useState([]);
-    const [searchWord, setSearchWord] =  useState([]);
-    const [showDateSearch, setShowDateSearch] =  useState([]);
-    const [searchDateWord, setSearchDateWord] =  useState([]);
+    const [showSearch, setShowSearch] =  useState(_.map(stringFieldArr,()=>false));
+    const [searchWord, setSearchWord] =  useState(_.map(stringFieldArr,()=>null));
+    const [showDateSearch, setShowDateSearch] =  useState(_.map(dateFieldArr,()=>false));
+    const [searchDateWord, setSearchDateWord] =  useState(_.map(dateFieldArr,()=>null));
     const [showModal, setShowModal] =  useState(false);
     const [tabledata, setTabledata] =  useState([]);
 
     const [pagenum, setPagenum] =  useState(1);
     const [maxpage, setMaxpage] =  useState(100);
     const [startnum, setStartnum] =  useState(0);
-    const [perpage, setPerpage] =  useState(20);
+    const perpage =  useState(20);
     const [ticketData, setTicketData] =  useState({});
     const [ticketRowNumber, setTicketRowNumber] =  useState('');
 
+    useEffect(()=>{
+      getData((startnum || searchWord)? false  : true);
+    },[startnum,searchWord])
 
-  const setStrSearch = (obj) => {
-    //this.setState(obj)
-  }
+    const setStrSearch = (obj) => {
+      if(obj){
+        if(obj.showSearch)
+          setShowSearch(obj.showSearch);
+        if(obj.searchWord)
+          setSearchWord(obj.searchWord);
+      }
+    }
 
   const setStrSearch1 = (obj) => {
-    //this.setState(obj, function () {
-      //getData()
-    //})
+     if(obj){
+      if(obj.showSearch)
+        setShowSearch(_.cloneDeep(obj.showSearch));
+      if(obj.searchWord)
+        setSearchWord(_.cloneDeep(obj.searchWord));
+    }
   }
 
   const handleModal = (ticket, ticketRowNumber, param) => {
@@ -101,21 +113,13 @@ const Tickets = (props)=>  {
     }
   }
 
-  const getData = (firstTime = false) => {
+  const getData = (firstTime = false) =>  {
     let start = startnum * perpage
     let tempTabledata = []
 
-    let headers = {
-      "content-type": "application/json",
-      Authorization: "Bearer " + token
-    }
+    let headers = { "content-type": "application/json", Authorization: "Bearer " + token }
+    let data = filterBody(stringFieldArr,dateFieldArr,searchWord,searchDateWord);
 
-    let data = filterBody(
-      stringFieldArr,
-      dateFieldArr,
-      searchWord,
-      searchDateWord
-    )
     if (firstTime) {
       data = {};
     }else {
@@ -131,51 +135,21 @@ const Tickets = (props)=>  {
         }
       )
       .then((res) => {
-        let response = res.data;
         // Update the tabledata in the store
         storeData(res.data)
 
         for (let i = start; i < start + perpage; i++) {
-          if (response[i] !== undefined) {
-            tempTabledata.push(response[i])
+          if (res.data[i] !== undefined) {
+            tempTabledata.push(res.data[i])
           }
         }
-
-        let maxpage = Math.floor(tempTabledata.length / perpage) + 1
-        setMaxpage(maxpage);
+        setMaxpage(_.cloneDeep(Math.floor(tempTabledata.length / perpage) + 1));
         setTabledata(tempTabledata);
       })
       .catch((error) => {
-        console.log('error----- ', error);
-        //console.log(error.response.data)
+        console.log(error.response.data)
       })
   }
-
-  useEffect(()=>{
-  let showSearch = [], searchWord = [], showDateSearch = [],searchDateWord = [];
-    stringFieldArr.forEach(function (value, key) {
-      showSearch.push(false)
-      searchWord.push(null)
-    })
-
-    dateFieldArr.forEach(function (value, key) {
-      showDateSearch.push(false)
-      searchDateWord.push(null)
-    })
-
-    setShowSearch(showSearch);
-    setSearchWord(searchWord);
-    setShowDateSearch(showDateSearch);
-    setSearchDateWord(searchDateWord);
-    getData(true);
-
-  },[])
-  
-
-  useEffect(()=>{
-    if(startnum)
-    getData(false)
-  },[startnum])
 
     return (
       <div>
@@ -212,9 +186,9 @@ const Tickets = (props)=>  {
                       <div
                         className="showCalendar"
                         onClick={() => {
-                          let showDateSearch = showDateSearch;
-                          showDateSearch[i] = !showDateSearch[i];
-                          setShowDateSearch(showDateSearch);
+                          let showDateSearchTemp = showDateSearch;
+                          showDateSearchTemp[i] = !showDateSearch[i];
+                          setShowDateSearch(showDateSearchTemp);
                         }}
                       >
                         <FiCalendar color="#bbb" size={17} />
@@ -228,12 +202,12 @@ const Tickets = (props)=>  {
                           color="#bbb"
                           size={17}
                           onClick={() => {
-                            let searchDateWord = searchDateWord;
-                              showDateSearch = showDateSearch;
-                            searchDateWord[i] = null;
-                            showDateSearch[i] = false;
-                            setSearchDateWord(searchDateWord);
-                            setShowDateSearch(showDateSearch);
+                            let searchDateWordTemp = searchDateWord;
+                            let showDateSearchTemp = showDateSearch;
+                            searchDateWordTemp[i] = null;
+                            showDateSearchTemp[i] = false;
+                            setSearchDateWord(searchDateWordTemp);
+                            setShowDateSearch(showDateSearchTemp);
                           }}
                         />
                         {searchDateWord[i]}
