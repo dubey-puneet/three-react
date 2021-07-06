@@ -74,16 +74,14 @@ const Tickets = (props)=>  {
     const [ticketData, setTicketData] =  useState({});
     const [ticketRowNumber, setTicketRowNumber] =  useState('');
 
-    useEffect(()=>{
-      getData((startnum || searchWord)? false  : true);
-    },[startnum,searchWord])
+    useEffect(()=> getData((startnum || searchWord || searchDateWord)? false  : true) ,[startnum,searchWord, searchDateWord])
 
     const setStrSearch = (obj) => {
       if(obj){
         if(obj.showSearch)
-          setShowSearch(obj.showSearch);
+          setShowSearch(_.cloneDeep(obj.showSearch));
         if(obj.searchWord)
-          setSearchWord(obj.searchWord);
+          setSearchWord(_.cloneDeep(obj.searchWord));
       }
     }
 
@@ -93,6 +91,10 @@ const Tickets = (props)=>  {
         setShowSearch(_.cloneDeep(obj.showSearch));
       if(obj.searchWord)
         setSearchWord(_.cloneDeep(obj.searchWord));
+      if(obj.searchDateWord){
+        setSearchDateWord(_.cloneDeep(obj.searchDateWord));
+        setShowDateSearch(_.cloneDeep(obj.showDateSearch))
+      }
     }
   }
 
@@ -188,7 +190,7 @@ const Tickets = (props)=>  {
                         onClick={() => {
                           let showDateSearchTemp = showDateSearch;
                           showDateSearchTemp[i] = !showDateSearch[i];
-                          setShowDateSearch(showDateSearchTemp);
+                          setShowDateSearch(_.cloneDeep(showDateSearchTemp));
                         }}
                       >
                         <FiCalendar color="#bbb" size={17} />
@@ -206,8 +208,8 @@ const Tickets = (props)=>  {
                             let showDateSearchTemp = showDateSearch;
                             searchDateWordTemp[i] = null;
                             showDateSearchTemp[i] = false;
-                            setSearchDateWord(searchDateWordTemp);
-                            setShowDateSearch(showDateSearchTemp);
+                            setSearchDateWord(_.cloneDeep(searchDateWordTemp));
+                            setShowDateSearch(_.cloneDeep(showDateSearchTemp));
                           }}
                         />
                         {searchDateWord[i]}
@@ -219,8 +221,8 @@ const Tickets = (props)=>  {
                         handle={setStrSearch1}
                         param="Search"
                         index={i}
-                        searchDateWord={searchDateWord}
-                        showDateSearch={showDateSearch}
+                        searchDateWord={_.cloneDeep(searchDateWord)}
+                        showDateSearch={_.cloneDeep(showDateSearch)}
                       />
                     )}
                   </td>

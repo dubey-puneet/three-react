@@ -53,6 +53,7 @@ const Search =(props)=> {
       }
     }
   }
+
   const setListSearch = (val) => {
     setShowSearch(false);
     let shSearch = props.showSearch,
@@ -99,7 +100,6 @@ const Search =(props)=> {
               <ul className="searchlist">
                 {listArr.map((value, indexId) => (
                   <li key={indexId} onClick={() => setListSearch(value)}>
-                    {value}
                   </li>
                 ))}
               </ul>
