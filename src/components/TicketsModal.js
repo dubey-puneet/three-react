@@ -243,11 +243,9 @@ const TicketsModal = (props ) => {
         </div>
       )
     }
-
   }
 
   const formFields = (field) => field.map((item, index) => fields(item));
-
 
   return (
     <div>
@@ -258,11 +256,8 @@ const TicketsModal = (props ) => {
         </Modal.Header>
         <Modal.Body id="form">
           {formFields(inputFields)}
-
           <div style={{ textAlign: "center", display: "flex" }} id="actions">
-            <span className="btn" id="btn-1" onClick={handleSubmit}>
-              Save
-            </span>
+            <span className="btn" id="btn-1" onClick={handleSubmit}>Save</span>
           </div>
         </Modal.Body>
       </Modal>
