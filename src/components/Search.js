@@ -98,10 +98,9 @@ const Search =(props)=> {
             )}
             {showList && (
               <ul className="searchlist">
-                {listArr.map((value, indexId) => (
-                  <li key={indexId} onClick={() => setListSearch(value)}>
-                  </li>
-                ))}
+                {listArr.map((value, indexId) => 
+                  <li key={indexId} onClick={() => setListSearch(value)}>{value}</li>
+                )}
               </ul>
             )}
             {!showSearch && (
