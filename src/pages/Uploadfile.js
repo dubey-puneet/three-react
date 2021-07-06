@@ -1,134 +1,139 @@
-import React from "react"
-
-import { connect } from "react-redux"
+import React, { useState } from "react"
+import { useSelector } from "react-redux"
 import { Form, InputGroup, FormControl, Alert, Button } from "react-bootstrap"
 import axios from "axios"
 
-import { withTranslation } from "react-i18next"
+import { useTranslation } from 'react-i18next'
 
-import "../assets/styles/_uploadfile.scss"
-import Header from "../layout/Header"
+import "assets/styles/_uploadfile.scss"
+import Header from "layout/Header"
 
-class Uploadfile extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      progress: true,
-      uploadedfile: null,
-      password: ""
+const Uploadfile = () => {
+
+  const { t } = useTranslation();
+  const currentUser = useSelector((state) => state.user.response)
+  const [progress, setProgress] = useState(true)
+  const [uploadedFile, setUploadedFile] = useState(null)
+  const [password, setPassword] = useState("")
+  const [uploadedFileRoute, setUploadedFileRoute] = useState('')
+  const excelTypeArrary = ['.csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']
+  const zipTypeArrary = ['.zip', 'application/octet-stream', 'application/zip', 'application/x-zip', 'application/x-zip-compressed']
+  const pdfTypeArray = ['application/pdf']
+
+  const fileUpload = (e) => {
+    setUploadedFile(e.target.files[0])
+    if (excelTypeArrary.includes(e.target.files[0].type)) {
+      setUploadedFileRoute('storeFile')
+    } else if (zipTypeArrary.includes(e.target.files[0].type)) {
+      setUploadedFileRoute('readPdfZip')
+    } else if (pdfTypeArray.includes(e.target.files[0].type)) {
+      setUploadedFileRoute('readPdfFiles')
     }
   }
 
-  fileupload = (e) => {
-    this.setState({
-      uploadedfile: e.target.files[0]
-    })
+  const getAcceptableString = () => {
+    let acceptString = ""
+    acceptString = excelTypeArrary.concat(zipTypeArrary, pdfTypeArray).join()
+    return acceptString
   }
 
-  handlesubmit = () => {
-    let data = new FormData()
-    data.append("file", this.state.uploadedfile)
+  const handleSubmit = () => {
 
+    let data = new FormData()
+    data.append("file", uploadedFile)
+    
     let headers = {
       "content-type": "application/json",
-      Authorization: "Bearer " + this.props.currentUser.token
+      Authorization: "Bearer " + currentUser.token
     }
 
     axios
       .post(
-        "http://eshkolserver.azurewebsites.net/api/convert/storeFile?pass=0542",
+        `http://eshkolserver.azurewebsites.net/api/convert/${uploadedFileRoute}`,
+        // ?pass=0542
         data,
         {
           headers: headers
         }
       )
       .then((res) => {
-        this.setState({ progress: false, uploadedfile: null })
+        setProgress(false)
+        setUploadedFile(null)
       })
       .catch((error) => {
         console.log(error.response.data)
       })
   }
-  render() {
-    const { uploadedfile, progress } = this.state
-    const { t } = this.props
-    return (
-      <div>
-        <Header />
 
-        <div className="content">
-          {uploadedfile === null && (
+  return (
+    <>
+    <Header />
+
+    <div className="content">
+      {uploadedFile === null && (
+        <div>
+          {progress === true && (
             <div>
-              {progress === true && (
-                <div>
-                  <h2>{t("uploadfile.load data")}</h2>
-                  <Form.File
-                    id="upload-file"
-                    className="col-md-4"
-                    label={t("uploadfile.choose file")}
-                    custom
-                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                    onChange={(e) => this.fileupload(e)}
-                  />
-                </div>
-              )}
-              {progress === false && (
-                <div>
-                  <Alert variant="success" className="successloaded col-md-6">
-                    <h2>{t("uploadfile.file loaded successfully")}</h2>
-                  </Alert>
-                  <Button
-                    variant="primary"
-                    className="m-4 loadbtn"
-                    onClick={(e) => this.setState({ progress: true })}
-                  >
-                    {t("uploadfile.load another")}
-                  </Button>
-                </div>
-              )}
+              <h2>{t("uploadfile.load data")}</h2>
+              <Form.File
+                id="upload-file"
+                className="col-md-4"
+                label={t("uploadfile.choose file")}
+                custom
+                accept={getAcceptableString()}
+                onChange={(e) => fileUpload(e)}
+              />
             </div>
           )}
-
-          {uploadedfile !== null && (
+          {progress === false && (
             <div>
-              <div className="input-group col-md-4">
-                <Alert variant="success">{uploadedfile.name} selected</Alert>
-                <Button
-                  variant="danger"
-                  onClick={() => this.setState({ uploadedfile: null })}
-                >
-                  {t("uploadfile.remove")}
-                </Button>
-              </div>
-              <InputGroup className="col-md-4">
-                <InputGroup.Prepend>
-                  <InputGroup.Text
-                    onChange={(e) =>
-                      this.setState({ password: e.target.value })
-                    }
-                  >
-                    {t("password")}
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl id="inlineFormInputGroup" />
-              </InputGroup>
+              <Alert variant="success" className="successloaded col-md-6">
+                <h2>{t("uploadfile.file loaded successfully")}</h2>
+              </Alert>
               <Button
                 variant="primary"
                 className="m-4 loadbtn"
-                onClick={this.handlesubmit}
+                onClick={(e) => setProgress(true)}
               >
-                {t("uploadfile.load")}
+                {t("uploadfile.load another")}
               </Button>
             </div>
           )}
         </div>
-      </div>
-    )
-  }
-}
+      )}
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
-})
-
-export default connect(mapStateToProps)(withTranslation()(Uploadfile))
+      {uploadedFile !== null && (
+        <div>
+          <div className="input-group col-md-4">
+            <Alert variant="success">{uploadedFile.name} selected</Alert>
+            <Button
+              variant="danger"
+              onClick={() => setUploadedFile(null)}
+            >
+              {t("uploadfile.remove")}
+            </Button>
+          </div>
+          <InputGroup className="col-md-4">
+            <InputGroup.Prepend>
+              <InputGroup.Text
+                onChange={(e) => setPassword(e.target.value)}
+              >
+                {t("password")}
+              </InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl id="inlineFormInputGroup" />
+          </InputGroup>
+          <Button
+            variant="primary"
+            className="m-4 loadbtn"
+            onClick={handleSubmit}
+          >
+            {t("uploadfile.load")}
+          </Button>
+        </div>
+      )}
+    </div>
+    </>
+  )
+};
+export default Uploadfile

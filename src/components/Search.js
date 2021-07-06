@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import axios from "axios"
 import { FiSearch, FiX } from "react-icons/fi"
-import "../assets/styles/_tickets.scss"
+import "assets/styles/_tickets.scss"
 
 const Search =(props)=> {
     const {index, handle, handle1, currentUser:{token}, param} = props;
