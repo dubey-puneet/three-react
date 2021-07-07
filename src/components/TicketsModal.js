@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { useDispatch } from "react-redux"
 import { Modal, InputGroup, FormControl } from "react-bootstrap"
 import { FiX, FiCalendar } from "react-icons/fi"
 import i18n from "i18next"
 import { useTranslation } from 'react-i18next'
 
 import CalendarTime from "components/CalendarTime"
-import { updateTicketForm } from "utils/redux/user/user.action"
+import { updateTicketForm, addNewTicketForm } from "utils/redux/user/user.action"
 import "assets/styles/_tickets.scss"
 import "assets/styles/_ticketsmodal.scss"
 import { inputFields } from "data/staticArrayValue"
@@ -14,12 +14,13 @@ import { inputFields } from "data/staticArrayValue"
 
 const TicketsModal = ( props ) => {
 
-  const { isAdmin } = props;
+  const { showModal, isAdmin, isNew, token, rowId } = props;
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [calender, setCalender] = useState({});
   const [formData, setFormData] = useState(props.data);
+
 
   useEffect(() => {
     setFormData(props.data);
@@ -28,10 +29,8 @@ const TicketsModal = ( props ) => {
   const handleChange = (event) => {
     const { target: { name, value } } = event;
     setFormData({
-      formData: {
         ...formData,
         [name]: value,
-      },
     });
   };
 
@@ -50,7 +49,11 @@ const TicketsModal = ( props ) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateTicketForm(props.token, props.data["Id"], formData, props.rowId))
+    if (isNew) {
+      dispatch(addNewTicketForm(token, formData))
+    } else {
+      dispatch(updateTicketForm(token, props.data["Id"], formData, rowId))
+    }
   };
 
   const fields = (input) => {
@@ -60,7 +63,7 @@ const TicketsModal = ( props ) => {
       return (
         <div className="item" key={input.label}>
           <label>{t(`tickets.${input.label}`)}</label>
-          <input type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)} onChange={handleChange} disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
+          <input name={input.label} type="text" onClick={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)} onChange={handleChange} disabled={!isAdmin} dir={(language === 'en') ? 'ltr' : 'rtl'} defaultValue={formData[input.label]} />
         </div>
       )
     }
@@ -99,14 +102,14 @@ const TicketsModal = ( props ) => {
 
   }
 
-  const formFields = (field) => field.map((item, index) => fields(item));
+  const formFields = (field) => field.map((item) => fields(item));
 
 
   return (
     <div>
-      <Modal show={props.showModal} onHide={() => props.handle(false)}>
+      <Modal show={showModal} onHide={() => props.handle({}, false)}>
         <Modal.Header>
-          <FiX color="#061129" size={17} onClick={() => props.handle(false)} />
+          <FiX color="#061129" size={17} onClick={() => props.handle({}, false)} />
           <Modal.Title>{t("tickets.Details")}</Modal.Title>
         </Modal.Header>
         <Modal.Body id="form">

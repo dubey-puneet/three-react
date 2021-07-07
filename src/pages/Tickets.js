@@ -38,29 +38,10 @@ const stringFieldArr = [
   "Suggestion premia",
   "Actual premia",
   "Pending notes",
-  // "Id",
-  // "Number of polisa",
-  // "partner name",
-  // "partner id",
-  // "agent",
-  // "agent number",
-  // "First payment",
-  // "Payment after 3 months",
-  // "Payment after year",
-  // "Outer cancelation",
-  // "Company",
-  // "Polisa num",
-  // "Polica type",
-  // "Active client in Kedem",
-  // "Twisting tag",
-  // "Free notes",
-  // "Product name to goals",
-  // "Phone meeting",
-  // "Fast start"
 ]
 
 //--------------------------------------------------------------
-const Tickets = (props)=>  {
+const Tickets = ()=>  {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -73,16 +54,12 @@ const Tickets = (props)=>  {
   const [showDateSearch, setShowDateSearch] =  useState(_.map(dateFieldArr, () => false));
   const [searchDateWord, setSearchDateWord] =  useState(_.map(dateFieldArr, () => null));
   const [showModal, setShowModal] =  useState(false);
-  const [tabledata, setTabledata] =  useState([]);
+  const [isNew, setIsNew] = useState(false);
 
-  const [pagenum, setPagenum] =  useState(1);
-  const [maxpage, setMaxpage] =  useState(100);
-  const [startnum, setStartnum] =  useState(0);
-  const perpage =  useState(20);
-  const [ticketData, setTicketData] =  useState({});
   const [ticketRowNumber, setTicketRowNumber] =  useState('');
+  const [ticketData, setTicketData] =  useState({});
 
-  useEffect(()=> getData((startnum || searchWord || searchDateWord)? false  : true) ,[startnum,searchWord, searchDateWord])
+  useEffect(()=> getData() ,[searchWord, searchDateWord])
 
   const setStrSearch = (obj) => {
     if(obj){
@@ -109,33 +86,15 @@ const Tickets = (props)=>  {
   const handleModal = (ticket, ticketRowNumber, param) => {
     setShowModal(param);
     setTicketData(ticket);
+    setIsNew(false)
     setTicketRowNumber(ticketRowNumber)
   }
 
-  const setPageNum = (event) => {
-    if (event.key === "Enter") {
-      if (!isNaN(pagenum) && pagenum > 0 && pagenum !== "") {
-        setStartnum( pagenum - 1)
-      } else {
-        setPagenum(1)
-        setStartnum(0)
-      }
-    }
-  }
-
-  const getData = (firstTime = false) =>  {
-    let start = startnum * perpage
-    let tempTabledata = []
+  const getData = () =>  {
 
     let headers = { "content-type": "application/json", Authorization: "Bearer " + currentUser.token }
-    let data = filterBody(stringFieldArr,dateFieldArr,searchWord,searchDateWord);
+    let data = filterBody(stringFieldArr, dateFieldArr, searchWord, searchDateWord);
 
-    if (firstTime) {
-      data = {};
-    }else {
-      //add parameter here for pagination
-      data={...data}
-    }
     axios
       .post(
         "http://eshkolserver.azurewebsites.net/api/Dynamic/searchDocuments/requests",
@@ -145,17 +104,7 @@ const Tickets = (props)=>  {
         }
       )
       .then((res) => {
-        // Update the tabledata in the store
         dispatch(setTableData(res.data))
-
-        for (let i = start; i < start + perpage; i++) {
-          if (res.data[i] !== undefined) {
-            tempTabledata.push(res.data[i])
-          }
-        }
-        console.log("tempTabledata",tempTabledata)
-        setMaxpage(_.cloneDeep(Math.floor(tempTabledata.length / perpage) + 1));
-        setTabledata(tempTabledata);
       })
       .catch((error) => {
         console.log(error.response.data)
@@ -166,6 +115,7 @@ const Tickets = (props)=>  {
       <>
       <Header />
       <div className="tickets">
+        {currentUser.isAdmin && <button className="add-new-button" onClick={() => {setShowModal(true); setIsNew(true)}}>Add New</button>}
         <table className={`table-responsive ${currentLang === "hebrew" ? "text-right" : "text-center"}`} >
           <thead>
             <tr>
@@ -256,51 +206,10 @@ const Tickets = (props)=>  {
             data={ticketData}
             handle={handleModal}
             rowId={ticketRowNumber}
-            token={token}
-            isAdmin={isAdmin}
+            token={currentUser.token}
+            isAdmin={currentUser.isAdmin}
+            isNew={isNew}
           />
-        )}
-        {tabledata && tabledata.length > 0 && (
-          <div className="pagination">
-            {pagenum > 1 && (
-              <span>
-                <FiChevronsLeft
-                  size={15}
-                  onClick={() => {setPagenum(1);setStartnum(0)}}
-                />
-                <FiChevronLeft
-                  size={15}
-                  onClick={() =>{setPagenum(1);setStartnum(0)}}
-                />
-              </span>
-            )}
-
-            <input
-              type="text"
-              className="pageNum form-control"
-              value={pagenum}
-              onChange={(e) => setPagenum(e.target.value)}
-              onKeyDown={(e) => setPageNum(e)}
-            />
-            {pagenum < maxpage && (
-              <span>
-                <FiChevronRight
-                  size={15}
-                  onClick={() =>
-                    {setPagenum(pagenum + 1);
-                    setStartnum(pagenum)}
-                  }
-                />
-                <FiChevronsRight
-                  size={15}
-                  onClick={() =>
-                    {setPagenum(maxpage);
-                    setStartnum(maxpage - 1)}
-                  }
-                />
-              </span>
-            )}
-          </div>
         )}
       </div>
       </>

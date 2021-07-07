@@ -144,3 +144,21 @@ tbody {
     }
   }
 }
+
+.add-new-button {
+  border: 1px solid #F68918;
+  font-size: 16px;
+  color: #fff;
+  background: #F68918;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 45px;
+  margin-left: auto;
+  margin-bottom: 20px;
+  &:hover {
+    background: #fff;
+    color: #F68918;
+  }
+}

@@ -1,14 +1,18 @@
-import React, {useState }from "react"
-import { connect } from "react-redux"
-import { InputGroup, FormControl, Button } from "react-bootstrap"
-import { withTranslation } from "react-i18next"
+import React, { useState }from "react"
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
 import axios from "axios"
+import { InputGroup, FormControl, Button } from "react-bootstrap"
 import { setCurrentUser } from "utils/redux/user/user.action"
 import ErrorMessage from 'components/ErrorMessage';
-import "../assets/styles/_login.scss"
+import "assets/styles/_login.scss"
 
-const Login = (props)=> {
-  const { t, setCurrentUser, history } = props;
+const Login = ()=> {
+
+  const { t } = useTranslation();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showUsernameWarn, setShowUsernameWarn] = useState(false);
@@ -16,8 +20,9 @@ const Login = (props)=> {
   const [showMismatch, setShowMismatch] = useState(false);
 
   const submit = () => {
-    setShowUsernameWarn((username === "")? true : false)
-    setShowPasswordWarn((password === "") ? true: false)
+
+    setShowUsernameWarn(username === "" ? true : false)
+    setShowPasswordWarn(password === "" ? true : false)
 
     if (username !== "" && password !== "") {
       axios
@@ -27,13 +32,15 @@ const Login = (props)=> {
         })
         .then((res) => {
           if (res.data) {
-            setCurrentUser({
-              username: res.data.fullName,
-              email: res.data.email,
-              isAdmin: res.data.isAdmin,
-              avatar: "taylor.png",
-              token: res.data.token
-            })
+            dispatch(
+              setCurrentUser({
+                username: res.data.fullName,
+                email: res.data.email,
+                isAdmin: res.data.isAdmin,
+                avatar: "taylor.png",
+                token: res.data.token
+              })
+            )
             history.push('/tickets')
           }
         })
@@ -78,15 +85,4 @@ const Login = (props)=> {
     )
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
-})
-
-const mapDispatchStateToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user))
-})
-
-export default connect(
-  mapStateToProps,
-  mapDispatchStateToProps
-)(withTranslation()(Login))
+export default Login
